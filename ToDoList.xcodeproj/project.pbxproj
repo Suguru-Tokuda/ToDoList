@@ -57,6 +57,39 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BB17739F209E4D370041F158 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				BBF77F7F20927DA6008D35C7 /* Item.swift */,
+				BB165606209E083B008CA3B8 /* ItemListAssign.swift */,
+				BBF77F8120927FFB008D35C7 /* List.swift */,
+				BB165608209E08CD008CA3B8 /* ListUserAssign.swift */,
+				BBF77F8320928144008D35C7 /* User.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		BB1773A0209E4D450041F158 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				BB165614209E43A6008CA3B8 /* ItemTableViewController.swift */,
+				BBF77F7D20927ABF008D35C7 /* ListTableTableViewController.swift */,
+				BB16560E209E3F14008CA3B8 /* SignInViewController.swift */,
+				BB165612209E3FA0008CA3B8 /* SignUpConfirmationViewController.swift */,
+				BB165610209E3F22008CA3B8 /* SignUpViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		BB1773A1209E4D760041F158 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				BB16560A209E0A43008CA3B8 /* ToDoListAPI.swift */,
+				BB16560C209E14C7008CA3B8 /* ToDoListDataStore.swift */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
 		BBF77F5F209279EF008D35C7 = {
 			isa = PBXGroup;
 			children = (
@@ -76,20 +109,11 @@
 		BBF77F6A209279EF008D35C7 /* ToDoList */ = {
 			isa = PBXGroup;
 			children = (
+				BB1773A1209E4D760041F158 /* API */,
+				BB1773A0209E4D450041F158 /* Controllers */,
+				BB17739F209E4D370041F158 /* Models */,
 				BBF77F77209279F1008D35C7 /* Info.plist */,
 				BBF77F6B209279EF008D35C7 /* AppDelegate.swift */,
-				BBF77F7F20927DA6008D35C7 /* Item.swift */,
-				BB165606209E083B008CA3B8 /* ItemListAssign.swift */,
-				BB165614209E43A6008CA3B8 /* ItemTableViewController.swift */,
-				BBF77F8120927FFB008D35C7 /* List.swift */,
-				BBF77F7D20927ABF008D35C7 /* ListTableTableViewController.swift */,
-				BB165608209E08CD008CA3B8 /* ListUserAssign.swift */,
-				BB16560E209E3F14008CA3B8 /* SignInViewController.swift */,
-				BB165612209E3FA0008CA3B8 /* SignUpConfirmationViewController.swift */,
-				BB165610209E3F22008CA3B8 /* SignUpViewController.swift */,
-				BB16560A209E0A43008CA3B8 /* ToDoListAPI.swift */,
-				BB16560C209E14C7008CA3B8 /* ToDoListDataStore.swift */,
-				BBF77F8320928144008D35C7 /* User.swift */,
 				BBF77F72209279F1008D35C7 /* Assets.xcassets */,
 				BBF77F74209279F1008D35C7 /* LaunchScreen.storyboard */,
 				BBF77F6F209279EF008D35C7 /* Main.storyboard */,
