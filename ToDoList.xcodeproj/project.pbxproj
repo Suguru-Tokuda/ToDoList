@@ -7,21 +7,43 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BB165607209E083B008CA3B8 /* ItemListAssign.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB165606209E083B008CA3B8 /* ItemListAssign.swift */; };
+		BB165609209E08CD008CA3B8 /* ListUserAssign.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB165608209E08CD008CA3B8 /* ListUserAssign.swift */; };
+		BB16560B209E0A43008CA3B8 /* ToDoListAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB16560A209E0A43008CA3B8 /* ToDoListAPI.swift */; };
+		BB16560D209E14C7008CA3B8 /* ToDoListDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB16560C209E14C7008CA3B8 /* ToDoListDataStore.swift */; };
+		BB16560F209E3F14008CA3B8 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB16560E209E3F14008CA3B8 /* SignInViewController.swift */; };
+		BB165611209E3F22008CA3B8 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB165610209E3F22008CA3B8 /* SignUpViewController.swift */; };
+		BB165613209E3FA0008CA3B8 /* SignUpConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB165612209E3FA0008CA3B8 /* SignUpConfirmationViewController.swift */; };
+		BB165615209E43A6008CA3B8 /* ItemTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB165614209E43A6008CA3B8 /* ItemTableViewController.swift */; };
 		BBF77F6C209279EF008D35C7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF77F6B209279EF008D35C7 /* AppDelegate.swift */; };
-		BBF77F6E209279EF008D35C7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF77F6D209279EF008D35C7 /* ViewController.swift */; };
 		BBF77F71209279EF008D35C7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BBF77F6F209279EF008D35C7 /* Main.storyboard */; };
 		BBF77F73209279F1008D35C7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BBF77F72209279F1008D35C7 /* Assets.xcassets */; };
 		BBF77F76209279F1008D35C7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BBF77F74209279F1008D35C7 /* LaunchScreen.storyboard */; };
+		BBF77F7E20927ABF008D35C7 /* ListTableTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF77F7D20927ABF008D35C7 /* ListTableTableViewController.swift */; };
+		BBF77F8020927DA6008D35C7 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF77F7F20927DA6008D35C7 /* Item.swift */; };
+		BBF77F8220927FFB008D35C7 /* List.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF77F8120927FFB008D35C7 /* List.swift */; };
+		BBF77F8420928144008D35C7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF77F8320928144008D35C7 /* User.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		BBF77F68209279EF008D35C7 /* List.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = List.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB165606209E083B008CA3B8 /* ItemListAssign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListAssign.swift; sourceTree = "<group>"; };
+		BB165608209E08CD008CA3B8 /* ListUserAssign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListUserAssign.swift; sourceTree = "<group>"; };
+		BB16560A209E0A43008CA3B8 /* ToDoListAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoListAPI.swift; sourceTree = "<group>"; };
+		BB16560C209E14C7008CA3B8 /* ToDoListDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoListDataStore.swift; sourceTree = "<group>"; };
+		BB16560E209E3F14008CA3B8 /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
+		BB165610209E3F22008CA3B8 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
+		BB165612209E3FA0008CA3B8 /* SignUpConfirmationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpConfirmationViewController.swift; sourceTree = "<group>"; };
+		BB165614209E43A6008CA3B8 /* ItemTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemTableViewController.swift; sourceTree = "<group>"; };
+		BBF77F68209279EF008D35C7 /* ToDoList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDoList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BBF77F6B209279EF008D35C7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		BBF77F6D209279EF008D35C7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		BBF77F70209279EF008D35C7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		BBF77F72209279F1008D35C7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BBF77F75209279F1008D35C7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BBF77F77209279F1008D35C7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BBF77F7D20927ABF008D35C7 /* ListTableTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTableTableViewController.swift; sourceTree = "<group>"; };
+		BBF77F7F20927DA6008D35C7 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		BBF77F8120927FFB008D35C7 /* List.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = List.swift; sourceTree = "<group>"; };
+		BBF77F8320928144008D35C7 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,7 +60,7 @@
 		BBF77F5F209279EF008D35C7 = {
 			isa = PBXGroup;
 			children = (
-				BBF77F6A209279EF008D35C7 /* List */,
+				BBF77F6A209279EF008D35C7 /* ToDoList */,
 				BBF77F69209279EF008D35C7 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -46,30 +68,41 @@
 		BBF77F69209279EF008D35C7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				BBF77F68209279EF008D35C7 /* List.app */,
+				BBF77F68209279EF008D35C7 /* ToDoList.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		BBF77F6A209279EF008D35C7 /* List */ = {
+		BBF77F6A209279EF008D35C7 /* ToDoList */ = {
 			isa = PBXGroup;
 			children = (
+				BBF77F77209279F1008D35C7 /* Info.plist */,
 				BBF77F6B209279EF008D35C7 /* AppDelegate.swift */,
-				BBF77F6D209279EF008D35C7 /* ViewController.swift */,
-				BBF77F6F209279EF008D35C7 /* Main.storyboard */,
+				BBF77F7F20927DA6008D35C7 /* Item.swift */,
+				BB165606209E083B008CA3B8 /* ItemListAssign.swift */,
+				BB165614209E43A6008CA3B8 /* ItemTableViewController.swift */,
+				BBF77F8120927FFB008D35C7 /* List.swift */,
+				BBF77F7D20927ABF008D35C7 /* ListTableTableViewController.swift */,
+				BB165608209E08CD008CA3B8 /* ListUserAssign.swift */,
+				BB16560E209E3F14008CA3B8 /* SignInViewController.swift */,
+				BB165612209E3FA0008CA3B8 /* SignUpConfirmationViewController.swift */,
+				BB165610209E3F22008CA3B8 /* SignUpViewController.swift */,
+				BB16560A209E0A43008CA3B8 /* ToDoListAPI.swift */,
+				BB16560C209E14C7008CA3B8 /* ToDoListDataStore.swift */,
+				BBF77F8320928144008D35C7 /* User.swift */,
 				BBF77F72209279F1008D35C7 /* Assets.xcassets */,
 				BBF77F74209279F1008D35C7 /* LaunchScreen.storyboard */,
-				BBF77F77209279F1008D35C7 /* Info.plist */,
+				BBF77F6F209279EF008D35C7 /* Main.storyboard */,
 			);
-			path = List;
+			path = ToDoList;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		BBF77F67209279EF008D35C7 /* List */ = {
+		BBF77F67209279EF008D35C7 /* ToDoList */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BBF77F7A209279F1008D35C7 /* Build configuration list for PBXNativeTarget "List" */;
+			buildConfigurationList = BBF77F7A209279F1008D35C7 /* Build configuration list for PBXNativeTarget "ToDoList" */;
 			buildPhases = (
 				BBF77F64209279EF008D35C7 /* Sources */,
 				BBF77F65209279EF008D35C7 /* Frameworks */,
@@ -79,9 +112,9 @@
 			);
 			dependencies = (
 			);
-			name = List;
+			name = ToDoList;
 			productName = List;
-			productReference = BBF77F68209279EF008D35C7 /* List.app */;
+			productReference = BBF77F68209279EF008D35C7 /* ToDoList.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -99,7 +132,7 @@
 					};
 				};
 			};
-			buildConfigurationList = BBF77F63209279EF008D35C7 /* Build configuration list for PBXProject "List" */;
+			buildConfigurationList = BBF77F63209279EF008D35C7 /* Build configuration list for PBXProject "ToDoList" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -112,7 +145,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				BBF77F67209279EF008D35C7 /* List */,
+				BBF77F67209279EF008D35C7 /* ToDoList */,
 			);
 		};
 /* End PBXProject section */
@@ -135,8 +168,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BBF77F6E209279EF008D35C7 /* ViewController.swift in Sources */,
+				BB16560F209E3F14008CA3B8 /* SignInViewController.swift in Sources */,
+				BBF77F7E20927ABF008D35C7 /* ListTableTableViewController.swift in Sources */,
+				BBF77F8420928144008D35C7 /* User.swift in Sources */,
+				BB16560B209E0A43008CA3B8 /* ToDoListAPI.swift in Sources */,
+				BBF77F8020927DA6008D35C7 /* Item.swift in Sources */,
+				BB165611209E3F22008CA3B8 /* SignUpViewController.swift in Sources */,
+				BB165607209E083B008CA3B8 /* ItemListAssign.swift in Sources */,
+				BB165615209E43A6008CA3B8 /* ItemTableViewController.swift in Sources */,
+				BB165613209E3FA0008CA3B8 /* SignUpConfirmationViewController.swift in Sources */,
+				BBF77F8220927FFB008D35C7 /* List.swift in Sources */,
 				BBF77F6C209279EF008D35C7 /* AppDelegate.swift in Sources */,
+				BB165609209E08CD008CA3B8 /* ListUserAssign.swift in Sources */,
+				BB16560D209E14C7008CA3B8 /* ToDoListDataStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -282,7 +326,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = FVEGF5DQ7U;
-				INFOPLIST_FILE = List/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/ToDoList/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -300,7 +344,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = FVEGF5DQ7U;
-				INFOPLIST_FILE = List/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/ToDoList/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -315,7 +359,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		BBF77F63209279EF008D35C7 /* Build configuration list for PBXProject "List" */ = {
+		BBF77F63209279EF008D35C7 /* Build configuration list for PBXProject "ToDoList" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BBF77F78209279F1008D35C7 /* Debug */,
@@ -324,7 +368,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BBF77F7A209279F1008D35C7 /* Build configuration list for PBXNativeTarget "List" */ = {
+		BBF77F7A209279F1008D35C7 /* Build configuration list for PBXNativeTarget "ToDoList" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BBF77F7B209279F1008D35C7 /* Debug */,
