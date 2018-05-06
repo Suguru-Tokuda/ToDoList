@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class Item {
+public struct Item {
     
     private var _id: String?
     private var _userId: String?
@@ -44,8 +44,8 @@ public class Item {
         get {
             return _desc!
         }
-        set(desc) {
-            self._desc = desc
+        set(description) {
+            self._desc = description
         }
     }
     
