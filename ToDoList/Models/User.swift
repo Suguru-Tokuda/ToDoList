@@ -8,22 +8,22 @@
 
 import Foundation
 
-public class User {
+public struct User {
     
-    private var _id: String?
+    private var _id: Int?
     private var _firstName: String?
     private var _lastName: String?
     private var _email: String?
     private var _password: String?
     
-    public init(id: String, firstName: String, lastName: String, email: String, password: String) {
+    public init(id: Int, firstName: String, lastName: String, email: String, password: String) {
         self._id = id
         self._firstName = firstName
         self._lastName = lastName
         self._password = password
     }
     
-    public var id: String {
+    public var id: Int {
         get {
             return _id!
         }

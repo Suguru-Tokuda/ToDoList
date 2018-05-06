@@ -10,7 +10,8 @@ import UIKit
 
 class ListTableTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchResultsUpdating {
 
-    var itemsList: [Item]?
+    
+    var itemsList: [ToDoItem]?
     @IBOutlet weak var listTableView: UITableView!
     let inviteBtn = UIButton()
     let searchController = UISearchController(searchResultsController: nil)
@@ -21,10 +22,10 @@ class ListTableTableViewController: UIViewController, UITableViewDelegate, UITab
     override func viewDidLoad() {
         super.viewDidLoad()
         inSearch = false
-        self.navigationItem.hidesBackButton = true
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "Search Course"
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -35,7 +36,7 @@ class ListTableTableViewController: UIViewController, UITableViewDelegate, UITab
     // MARK: - Table view functions
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "listItemCell", for: indexPath)
-        cell.textLabel!.text = self.itemsList![indexPath.row].desc
+        cell.textLabel!.text = self.itemsList![indexPath.row].description
         return cell
     }
 
