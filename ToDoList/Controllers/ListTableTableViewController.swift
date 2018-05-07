@@ -70,7 +70,7 @@ class ListTableTableViewController: UIViewController {
         let alert = UIAlertController(title: "New List", message: "Enter a title", preferredStyle: .alert)
         alert.addTextField { (textField) in
             textField.text = "List Title"
-        }        
+        }
         alert.addAction(UIAlertAction(title: "Create", style: .default, handler: { [weak alert] (_) in
             let title = alert!.textFields![0]
             self.createList(title: title.text!, userId: self.user!.id)
@@ -84,7 +84,7 @@ class ListTableTableViewController: UIViewController {
 extension ListTableTableViewController: UITableViewDelegate, UITableViewDataSource {
     // MARK: - Table view functions
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "listItemCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "listCell", for: indexPath)
         let list = self.lists[indexPath.row]
         cell.textLabel!.text = list.title
         return cell
@@ -151,7 +151,7 @@ extension ListTableTableViewController {
         let getAllListsGroup = DispatchGroup()
         var lists: [List]?
         getAllListsGroup.enter()
-        toDoListDataStore.getLists(listId: nil) { (listsResult) in
+        toDoListDataStore.getLists(listId: nil, completion: { (listsResult) in
             switch listsResult {
             case let .success(response):
                 lists = response
@@ -159,7 +159,7 @@ extension ListTableTableViewController {
                 print(error)
             }
             getAllListsGroup.leave()
-        }
+        })
         
         getAllListsGroup.notify(queue: .main) {
             var idCandidate = arc4random_uniform(1000) + 1 // represents the candidate of the listId
@@ -210,7 +210,7 @@ extension ListTableTableViewController {
                             break
                         }
                         if i != max {
-                            if lists![i].id != idCandidate.description {
+                            if listUserAssigns![i].id != idCandidate.description {
                                 uniqueCounter += 1
                             }
                         }

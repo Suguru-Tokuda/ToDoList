@@ -135,7 +135,12 @@ class ToDoListAPI {
                         if isImportantStr == "true" {
                             isImportant = true
                         }
-                        itemsArray.append(Item(id: id, userId: userId, desc: desc, isImportant: isImportant))
+                        var isComplete = false
+                        let isCompleteStr = item["isComplete"] as? String ?? ""
+                        if isCompleteStr == "true" {
+                            isComplete = true
+                        }
+                        itemsArray.append(Item(id: id, userId: userId, desc: desc, isImportant: isImportant, isComplete: isComplete))
                     }
                 }
             }

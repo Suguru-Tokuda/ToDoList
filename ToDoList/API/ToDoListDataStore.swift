@@ -178,8 +178,8 @@ public class ToDoListDataStore {
             }.resume()
     }
     
-    func postPutItem(method: String, item: Item, userId: String) {
-        let parameters = ["id": item.id, "userId": userId, "desc": item.desc, "isImportant": item.isImportant.description]
+    func postPutItem(method: String, item: Item) {
+        let parameters = ["id": item.id, "userId": item.userId, "desc": item.desc, "isImportant": item.isImportant.description]
         var url: URL?
         if method == "POST" {
             url = ToDoListAPI.getItemsRequestURL(method: .noParams, itemId: nil)
