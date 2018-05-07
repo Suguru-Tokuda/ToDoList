@@ -8,7 +8,9 @@
 
 import UIKit
 
-class ItemTableViewController: UIViewController {
+class ItemsTableViewController: UIViewController {
+    
+    var listToShow: List?
 
     override func viewDidLoad() {
         super.viewDidLoad()

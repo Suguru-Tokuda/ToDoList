@@ -20,6 +20,7 @@ public class User {
         self._id = id
         self._firstName = firstName
         self._lastName = lastName
+        self._email = email
         self._password = password
     }
     

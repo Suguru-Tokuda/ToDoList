@@ -16,11 +16,11 @@ enum QueryMethod: String {
 class ToDoListAPI {
     
     //MARK: Base URLs
-    private static let usersBaseURL = ""
-    private static let listsBaseURL = ""
-    private static let itemsBaseURL = ""
-    private static let listUserAssignBaseURL = ""
-    private static let itemListAssignBaseURL = ""
+    private static let usersBaseURL = "https://78kgwweb04.execute-api.us-east-2.amazonaws.com/users"
+    private static let listsBaseURL = "https://1xlcbnos03.execute-api.us-east-2.amazonaws.com/lists"
+    private static let itemsBaseURL = "https://gim8s9c1t2.execute-api.us-east-2.amazonaws.com/items"
+    private static let listUserAssignBaseURL = "https://yj5b3di6hl.execute-api.us-east-2.amazonaws.com/listUserAssign"
+    private static let itemListAssignBaseURL = "https://yjcqnge35k.execute-api.us-east-2.amazonaws.com/itemListAssign"
     
     //MARK: Rquest URLs
     public static func getUsersRequestURL(method: QueryMethod, userId: String?) -> URL {

@@ -54,7 +54,7 @@ public class ToDoListDataStore {
             OperationQueue.main.addOperation {
                 completion(result)
             }
-        }.resume()
+            }.resume()
     }
     
     func getLists(listId: String?, completion: @escaping (ListsResult) -> Void) {
@@ -70,7 +70,7 @@ public class ToDoListDataStore {
             OperationQueue.main.addOperation {
                 completion(result)
             }
-        }.resume()
+            }.resume()
     }
     
     func getItems(itemId: String?, completion: @escaping (ItemsResult) -> Void) {
@@ -102,7 +102,7 @@ public class ToDoListDataStore {
             OperationQueue.main.addOperation {
                 completion(result)
             }
-        }.resume()
+            }.resume()
     }
     
     func getListUserAssigns(listUserAssignId: String?, completion: @escaping (ListUserAssignResult) -> Void) {
@@ -118,15 +118,21 @@ public class ToDoListDataStore {
             OperationQueue.main.addOperation {
                 completion(result)
             }
-        }.resume()
+            }.resume()
     }
     
     //MARK: POST/PUT Request
     func postPutUser(method: String, user: User) {
         let parameters = ["id": user.id, "firstName": user.firstName, "lastName": user.lastName, "email": user.email, "password": user.password]
-        let url = ToDoListAPI.getUsersRequestURL(method: .noParams, userId: nil)
-        var request = URLRequest(url: url)
+        var url: URL?
+        if method == "POST" {
+            url = ToDoListAPI.getUsersRequestURL(method: .noParams, userId: nil)
+        } else if method == "PUT" {
+            url = ToDoListAPI.getUsersRequestURL(method: .noParams, userId: user.id)
+        }
+        var request = URLRequest(url: url!)
         request.httpMethod = method
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {
             return
         }
@@ -136,24 +142,25 @@ public class ToDoListDataStore {
                 print(response)
             }
             if let data = data {
-                do {
-                    let json = try JSONSerialization.data(withJSONObject: data, options: [])
-                    print(json)
-                } catch {
-                    print(error)
-                }
+                print(data)
             }
             if let error = error {
                 print(error)
             }
-        }.resume()
+            }.resume()
     }
     
-    func postPutList(method: String, list: List, userId: String) {
-        let parameters = ["id": list.id, "title": list.title, "isArchived": list.isArchived.description, userId: userId]
-        let url = ToDoListAPI.getListsRequestURL(method: .noParams, listId: nil)
-        var request = URLRequest(url: url)
+    func postPutList(method: String, list: List) {
+        let parameters = ["id": list.id, "title": list.title, "isArchived": list.isArchived.description]
+        var url: URL?
+        if method == "POST" {
+            url = ToDoListAPI.getListsRequestURL(method: .noParams, listId: nil)
+        } else if method == "PUT" {
+            url = ToDoListAPI.getListsRequestURL(method: .noParams, listId: list.id)
+        }
+        var request = URLRequest(url: url!)
         request.httpMethod = method
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {
             return
         }
@@ -163,220 +170,172 @@ public class ToDoListDataStore {
                 print(response)
             }
             if let data = data {
-                do {
-                    let json = try JSONSerialization.data(withJSONObject: data, options: [])
-                    print(json)
-                } catch {
-                    print(error)
-                }
+                print(data)
             }
             if let error = error {
                 print(error)
             }
-        }.resume()
+            }.resume()
     }
     
     func postPutItem(method: String, item: Item, userId: String) {
         let parameters = ["id": item.id, "userId": userId, "desc": item.desc, "isImportant": item.isImportant.description]
-        let url = ToDoListAPI.getItemsRequestURL(method: .noParams, itemId: nil)
-        var request = URLRequest(url: url)
+        var url: URL?
+        if method == "POST" {
+            url = ToDoListAPI.getItemsRequestURL(method: .noParams, itemId: nil)
+        } else if method == "PUT" {
+            url = ToDoListAPI.getItemsRequestURL(method: .noParams, itemId: item.id)
+        }
+        var request = URLRequest(url: url!)
         request.httpMethod = method
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {
             return
         }
         request.httpBody = httpBody
-        session.dataTask(with: url) { (data, response, error) in
+        session.dataTask(with: request) { (data, response, error) in
             if let response = response {
                 print(response)
             }
             if let data = data {
-                do {
-                    let json = try JSONSerialization.data(withJSONObject: data, options: [])
-                    print(json)
-                } catch {
-                    print(error)
-                }
+                print(data)
             }
             if let error = error {
                 print(error)
             }
-        }.resume()
+            }.resume()
     }
     
-    func postPutItemListAssign(method: String, id: String, itemId: String, listId: String) {
-        let parameters = ["id": id, "itemId": itemId, "listId": listId]
-        let url = ToDoListAPI.getItemListAssignsURL(method: .noParams, itemListAssignId: nil)
-        var request = URLRequest(url: url)
+    func postPutItemListAssign(method: String, itemListAssign: ItemListAssign) {
+        let parameters = ["id": itemListAssign.id, "itemId": itemListAssign.itemId, "listId": itemListAssign.listId]
+        var url: URL?
+        if method == "POST" {
+            url = ToDoListAPI.getItemListAssignsURL(method: .noParams, itemListAssignId: nil)
+        } else if method == "PUT" {
+            url = ToDoListAPI.getItemListAssignsURL(method: .noParams, itemListAssignId: itemListAssign.id)
+        }
+        var request = URLRequest(url: url!)
         request.httpMethod = method
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {
             return
         }
         request.httpBody = httpBody
-        session.dataTask(with: url) { (data, response, error) in
+        session.dataTask(with: request) { (data, response, error) in
             if let response = response {
                 print(response)
             }
             if let data = data {
-                do {
-                    let json = try JSONSerialization.data(withJSONObject: data, options: [])
-                    print(json)
-                } catch {
-                    print(error)
-                }
+                print(data)
             }
             if let error = error {
                 print(error)
             }
-        }.resume()
+            }.resume()
     }
     
-    func postPutListUserAssign(method: String, id: String, userId: String, listId: String) {
-        let parameters = ["id": id, "userId": userId, "listId": listId]
-        let url = ToDoListAPI.getListUserAssignURL(method: .noParams, listUserAssignId: nil)
-        var request = URLRequest(url: url)
+    func postPutListUserAssign(method: String, listUserAssign: ListUserAssign) {
+        let parameters = ["id": listUserAssign.id, "userId": listUserAssign.userId, "listId": listUserAssign.listId]
+        var url: URL?
+        if method == "POST" {
+            url = ToDoListAPI.getListUserAssignURL(method: .noParams, listUserAssignId: nil)
+        } else if method == "PUT" {
+            url = ToDoListAPI.getListUserAssignURL(method: .noParams, listUserAssignId: listUserAssign.id)
+        }
+        var request = URLRequest(url: url!)
         request.httpMethod = method
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {
             return
         }
         request.httpBody = httpBody
-        session.dataTask(with: url) { (data, response, error) in
+        session.dataTask(with: request) { (data, response, error) in
             if let response = response {
                 print(response)
             }
             if let data = data {
-                do {
-                    let json = try JSONSerialization.data(withJSONObject: data, options: [])
-                    print(json)
-                } catch {
-                    print(error)
-                }
+                print(data)
             }
             if let error = error {
                 print(error)
             }
-        }
+            }.resume()
     }
     
     //MARK: DELETE Requests
     func deleteUser(id: String) {
-        let parameters = ["id": id]
-        let url = ToDoListAPI.getUsersRequestURL(method: .noParams, userId: nil)
+        let url = ToDoListAPI.getUsersRequestURL(method: .noParams, userId: id)
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
-        guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {
-            return
-        }
-        request.httpBody = httpBody
         session.dataTask(with: request) { (data, response, error) in
             if let response = response {
                 print(response)
             }
             if let data = data {
-                do {
-                    let json = try JSONSerialization.data(withJSONObject: data, options: [])
-                    print(json)
-                } catch {
-                    print(error)
-                }
+                print(data)
             }
             if let error = error {
                 print(error)
             }
-            }.resume()
+        }.resume()
     }
     
     func deleteList(id: String) {
-        let parameters = ["id": id]
-        let url = ToDoListAPI.getListsRequestURL(method: .noParams, listId: nil)
+        let url = ToDoListAPI.getListsRequestURL(method: .noParams, listId: id)
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
-        guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {
-            return
-        }
-        request.httpBody = httpBody
         session.dataTask(with: request) { (data, response, error) in
             if let response = response {
                 print(response)
             }
             if let data = data {
-                do {
-                    let json = try JSONSerialization.data(withJSONObject: data, options: [])
-                    print(json)
-                } catch {
-                    print(error)
-                }
+                print(data)
             }
             if let error = error {
                 print(error)
             }
-            }.resume()
+        }.resume()
     }
     
     func deleteItem(id: String) {
-        let parameters = ["id": id]
-        let url = ToDoListAPI.getItemsRequestURL(method: .noParams, itemId: nil)
+        let url = ToDoListAPI.getItemsRequestURL(method: .noParams, itemId: id)
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
-        guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {
-            return
-        }
-        request.httpBody = httpBody
-        session.dataTask(with: url) { (data, response, error) in
+        session.dataTask(with: request) { (data, response, error) in
             if let response = response {
                 print(response)
             }
             if let data = data {
-                do {
-                    let json = try JSONSerialization.data(withJSONObject: data, options: [])
-                    print(json)
-                } catch {
-                    print(error)
-                }
+                print(data)
             }
             if let error = error {
                 print(error)
             }
-            }.resume()
+        }.resume()
     }
     
     func deleteItemListAssign(id: String) {
-        let parameters = ["id": id]
-        let url = ToDoListAPI.getItemListAssignsURL(method: .noParams, itemListAssignId: nil)
+        let url = ToDoListAPI.getItemListAssignsURL(method: .noParams, itemListAssignId: id)
         var request = URLRequest(url: url)
-        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "DELETE"
-        guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {
-            return
-        }
-        request.httpBody = httpBody
-        session.dataTask(with: url) { (data, response, error) in
+        session.dataTask(with: request) { (data, response, error) in
             if let response = response {
                 print(response)
             }
             if let data = data {
-                do {
-                    let json = try JSONSerialization.data(withJSONObject: data, options: [])
-                    print(json)
-                } catch {
-                    print(error)
-                }
+                print(data)
             }
             if let error = error {
                 print(error)
             }
-            }.resume()
+        }.resume()
     }
     
     func deleteListUserAssign(id: String) {
-        let parameters = ["id": id]
-        let url = ToDoListAPI.getListUserAssignURL(method: .noParams, listUserAssignId: nil)
+        let url = ToDoListAPI.getListUserAssignURL(method: .noParams, listUserAssignId: id)
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
-        guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {
-            return
-        }
-        request.httpBody = httpBody
-        session.dataTask(with: url) { (data, response, error) in
+        session.dataTask(with: request) { (data, response, error) in
             if let response = response {
                 print(response)
             }
@@ -429,8 +388,5 @@ public class ToDoListDataStore {
         }
         return ToDoListAPI.getListUserAssignResult(fromJSON: jsonData)
     }
-    
-    
-    
     
 }
