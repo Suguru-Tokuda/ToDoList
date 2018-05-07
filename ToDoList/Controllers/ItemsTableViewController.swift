@@ -26,6 +26,7 @@ class ItemsTableViewController: UIViewController {
     var activityIndicatorView: UIActivityIndicatorView?
     let searchController = UISearchController(searchResultsController: nil)
     var showCompleteItemsBtn: UIButton?
+    var addItemBtn: UIBarButtonItem?
     var addToListBtn: UIBarButtonItem?
     
     override func viewDidLoad() {
@@ -45,28 +46,12 @@ class ItemsTableViewController: UIViewController {
         self.view.addSubview(showCompleteItemsBtn!)
         showCompleteItemsBtn!.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         showCompleteItemsBtn!.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -5).isActive = true
+        addItemBtn = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addItemBtnTapped))
         addToListBtn = UIBarButtonItem(image: UIImage(named: "group"), style: .plain, target: self, action: #selector(addToGroupBtnTapped))
+        self.navigationItem.setRightBarButtonItems([addItemBtn!, addToListBtn!], animated: true)
         getItems(listId: listToShow!.id)
     }
     
-    @IBAction func addBtnTapped(_ sender: Any) {
-        let alert = UIAlertController(title: "New Item", message: "Enter an item description and click \"Important\" or \"Less Important\"", preferredStyle: .alert)
-        alert.addTextField { (textField) in
-            textField.text = "Item Description"
-        }
-        alert.addAction(UIAlertAction(title: "Important", style: .default, handler: { [weak alert] (_) in
-            let desc = alert!.textFields![0].text
-            self.createItem(desc: desc!, isImportant: true)
-        }))
-        alert.addAction(UIAlertAction(title: "Less Important", style: .default, handler: { [weak alert] (_) in
-            let desc = alert!.textFields![0].text
-            self.createItem(desc: desc!, isImportant: false)
-        }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
-        self.present(alert, animated: true, completion: nil)
-    }
-    
-
 }
 
 extension ItemsTableViewController: UITableViewDelegate, UITableViewDataSource {
@@ -117,6 +102,23 @@ extension ItemsTableViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension ItemsTableViewController {
+    @objc func addItemBtnTapped() {
+        let alert = UIAlertController(title: "New Item", message: "Enter an item description and click \"Important\" or \"Less Important\"", preferredStyle: .alert)
+        alert.addTextField { (textField) in
+            textField.text = "Item Description"
+        }
+        alert.addAction(UIAlertAction(title: "Important", style: .default, handler: { [weak alert] (_) in
+            let desc = alert!.textFields![0].text
+            self.createItem(desc: desc!, isImportant: true)
+        }))
+        alert.addAction(UIAlertAction(title: "Less Important", style: .default, handler: { [weak alert] (_) in
+            let desc = alert!.textFields![0].text
+            self.createItem(desc: desc!, isImportant: false)
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
     @objc func showCompleteBtnTapped() {
         showCompleted = !showCompleted
         if showCompleted {

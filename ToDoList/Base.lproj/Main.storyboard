@@ -595,13 +595,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="dJD-bO-oAI"/>
                     </view>
-                    <navigationItem key="navigationItem" id="xKI-FZ-LmW">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="chi-Ma-Nfj">
-                            <connections>
-                                <action selector="addBtnTapped:" destination="69b-4z-arD" id="6Xc-YZ-KoO"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="xKI-FZ-LmW"/>
                     <connections>
                         <outlet property="itemsTableView" destination="4Q2-dN-WP0" id="KSc-FW-W1L"/>
                     </connections>

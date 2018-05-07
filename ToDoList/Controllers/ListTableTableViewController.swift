@@ -31,6 +31,8 @@ class ListTableTableViewController: UIViewController {
     var showCompleted: Bool = false
     
     var buildFromHistoryBtn: UIBarButtonItem?
+    var addListBtn: UIBarButtonItem?
+    var logoutBtn: UIBarButtonItem?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,31 +56,19 @@ class ListTableTableViewController: UIViewController {
         searchController.searchBar.placeholder = "Search Lists"
         navigationItem.searchController = searchController
         definesPresentationContext = true
+        
+        addListBtn = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addListBtnTapped))
+        logoutBtn = UIBarButtonItem(image: UIImage(named: "exit"), style: .plain, target: self, action: #selector(logoutBtnTapped))
+        
+        self.navigationItem.setRightBarButtonItems([addListBtn!, logoutBtn!], animated: true)
+        
         getLists()
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-    
-    @IBAction func logoutBtnTapped(_ sender: Any) {
-        appDelegate!.isLoggedIn = false
-        performSegue(withIdentifier: "goBackToLogin", sender: self)
-    }
-    
-    @IBAction func addListBtnTapped(_ sender: Any) {
-        let alert = UIAlertController(title: "New List", message: "Enter a title", preferredStyle: .alert)
-        alert.addTextField { (textField) in
-            textField.text = "List Title"
-        }
-        alert.addAction(UIAlertAction(title: "Create", style: .default, handler: { [weak alert] (_) in
-            let title = alert!.textFields![0]
-            self.createList(title: title.text!, userId: self.user!.id)
-        }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
-        self.present(alert, animated: true, completion: nil)
-    }
-    
+
 }
 
 extension ListTableTableViewController: UITableViewDelegate, UITableViewDataSource {
@@ -141,6 +131,24 @@ extension ListTableTableViewController {
             let itemsTableViewController = segue.destination as? ItemsTableViewController
             itemsTableViewController?.listToShow = self.listToShow!
         }
+    }
+    
+    @objc func logoutBtnTapped() {
+        appDelegate!.isLoggedIn = false
+        performSegue(withIdentifier: "goBackToLogin", sender: self)
+    }
+    
+    @objc func addListBtnTapped() {
+        let alert = UIAlertController(title: "New List", message: "Enter a title", preferredStyle: .alert)
+        alert.addTextField { (textField) in
+            textField.text = "List Title"
+        }
+        alert.addAction(UIAlertAction(title: "Create", style: .default, handler: { [weak alert] (_) in
+            let title = alert!.textFields![0]
+            self.createList(title: title.text!, userId: self.user!.id)
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
     
     @objc func buildFromHistoryBtnTapped() {
