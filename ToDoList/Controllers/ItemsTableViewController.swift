@@ -89,12 +89,61 @@ extension ItemsTableViewController: UITableViewDelegate, UITableViewDataSource {
         var actions = [UITableViewRowAction]()
         if (showCompleted) {
             let delete = UITableViewRowAction(style: .normal, title: "Remove") { action, index in
-                print("delete button tapped")
+                self.startActivityIndicator()
+                let itemToDelete = self.itemsToShow[indexPath.row]
+                let getItemListAssignsGroup = DispatchGroup()
+                getItemListAssignsGroup.enter()
+                var itemListAssigns: [ItemListAssign]?
+                self.toDoListDataStore?.getItemListAssigns(itemListAssignId: nil, completion: { (result) in
+                    switch result {
+                    case let .success(response):
+                        itemListAssigns = response
+                    case let .failure(error):
+                        print(error)
+                    }
+                    getItemListAssignsGroup.leave()
+                })
+                getItemListAssignsGroup.notify(queue: .main, execute: {
+                    var itemListAssignIdToDelete: String?
+                    for itemListAssign in itemListAssigns! {
+                        if itemListAssign.itemId == itemToDelete.id {
+                            itemListAssignIdToDelete = itemListAssign.id
+                        }
+                    }
+                    let deleteItemGroup = DispatchGroup()
+                    deleteItemGroup.enter()
+                    self.toDoListDataStore?.deleteItem(id: itemToDelete.id, completion: { (result) in
+                        switch result {
+                        case let .success(response):
+                            print(response)
+                        case let .failure(error):
+                            print(error)
+                        }
+                        deleteItemGroup.leave()
+                    })
+                    deleteItemGroup.notify(queue: .main, execute: {
+                        let deleteItemAssignGroup = DispatchGroup()
+                        deleteItemAssignGroup.enter()
+                        self.toDoListDataStore?.deleteItemListAssign(id: itemListAssignIdToDelete!, completion: { (result) in
+                            switch result {
+                            case let .success(response):
+                                print(response)
+                            case let .failure(error):
+                                print(error)
+                            }
+                            deleteItemAssignGroup.leave()
+                        })
+                        deleteItemAssignGroup.notify(queue: .main, execute: {
+                            self.activityIndicatorView?.stopAnimating()
+                            self.getItems(listId: self.listToShow!.id)
+                        })
+                    })
+                })
             }
             actions.append(delete)
         } else {
             let complete = UITableViewRowAction(style: .normal, title: "Complete") { action, index in
-                var item = self.allItems[indexPath.row]
+                var item = self.itemsToShow[indexPath.row]
                 item.isComplete = true
                 let updateItemGroup = DispatchGroup()
                 updateItemGroup.enter()
@@ -200,14 +249,17 @@ extension ItemsTableViewController {
         return emailTest.evaluate(with: email)
     }
     
-    private func addToGroup(email: String) {
+    private func startActivityIndicator() {
         activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
         activityIndicatorView?.startAnimating()
         activityIndicatorView?.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(activityIndicatorView!)
         activityIndicatorView?.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         activityIndicatorView?.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
-        
+    }
+    
+    private func addToGroup(email: String) {
+        startActivityIndicator()
         let getAllUsersGroup = DispatchGroup()
         var users: [User]?
         var userId: String?
@@ -415,58 +467,73 @@ extension ItemsTableViewController {
         activityIndicatorView?.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
         
         var itemListAssignsArray = [ItemListAssign]()
-        let getItemListAssigns = DispatchGroup()
-        getItemListAssigns.enter()
-        toDoListDataStore?.getItemListAssigns(itemListAssignId: nil, completion: { (itemListAssigns) in
-            switch itemListAssigns {
+        
+        let getAllUsersGroup = DispatchGroup()
+        getAllUsersGroup.enter()
+        toDoListDataStore?.getUsers(userId: nil, completion: { (result) in
+            switch result {
             case let .success(response):
-                itemListAssignsArray = response
-                for itemListAssign in itemListAssignsArray {
-                    let listIdFromDB = itemListAssign.listId
-                    let itemIdFromDB = itemListAssign.itemId
-                    if listIdFromDB == listId && !self.itemIds.contains(itemIdFromDB) {
-                        self.itemIds.append(itemIdFromDB)
-                    }
-                }
+                self.allUsers = response
             case let .failure(error):
                 print(error)
             }
-            getItemListAssigns.leave()
+            getAllUsersGroup.leave()
         })
         
-        var tempItemsArray = [Item]()
-        let getItemsDispatchGroup = DispatchGroup()
-        getItemsDispatchGroup.enter()
-        allItems.removeAll()
-        getItemListAssigns.notify(queue: .main) {
-            self.toDoListDataStore?.getItems(itemId: nil, completion: { (itemsResult) in
-                switch itemsResult {
+        getAllUsersGroup.notify(queue: .main) {
+            let getItemListAssigns = DispatchGroup()
+            getItemListAssigns.enter()
+            self.toDoListDataStore?.getItemListAssigns(itemListAssignId: nil, completion: { (itemListAssigns) in
+                switch itemListAssigns {
                 case let .success(response):
-                    tempItemsArray = response
-                    for item in tempItemsArray {
-                        for id in self.itemIds {
-                            if item.id == id {
-                                self.allItems.append(item)
-                            }
+                    itemListAssignsArray = response
+                    for itemListAssign in itemListAssignsArray {
+                        let listIdFromDB = itemListAssign.listId
+                        let itemIdFromDB = itemListAssign.itemId
+                        if listIdFromDB == listId && !self.itemIds.contains(itemIdFromDB) {
+                            self.itemIds.append(itemIdFromDB)
                         }
                     }
                 case let .failure(error):
                     print(error)
                 }
-                getItemsDispatchGroup.leave()
+                getItemListAssigns.leave()
             })
-        }
-        
-        getItemsDispatchGroup.notify(queue: .main) {
-            self.allItems = self.allItems.sorted(by: {$0.isImportant && !$1.isImportant })
-            for item in self.allItems {
-                if !item.isComplete {
-                    self.activeItems.append(item)
-                }
+            
+            var tempItemsArray = [Item]()
+            let getItemsDispatchGroup = DispatchGroup()
+            getItemsDispatchGroup.enter()
+//            self.allItems.removeAll()
+            getItemListAssigns.notify(queue: .main) {
+                self.toDoListDataStore?.getItems(itemId: nil, completion: { (itemsResult) in
+                    switch itemsResult {
+                    case let .success(response):
+                        tempItemsArray = response
+                        for item in tempItemsArray {
+                            for id in self.itemIds {
+                                if item.id == id {
+                                    self.allItems.append(item)
+                                }
+                            }
+                        }
+                    case let .failure(error):
+                        print(error)
+                    }
+                    getItemsDispatchGroup.leave()
+                })
             }
-            self.itemsToShow = self.activeItems
-            self.itemsTableView.reloadData()
-            self.activityIndicatorView?.stopAnimating()
+            
+            getItemsDispatchGroup.notify(queue: .main) {
+                self.allItems = self.allItems.sorted(by: {$0.isImportant && !$1.isImportant })
+                for item in self.allItems {
+                    if !item.isComplete {
+                        self.activeItems.append(item)
+                    }
+                }
+                self.itemsToShow = self.activeItems
+                self.itemsTableView.reloadData()
+                self.activityIndicatorView?.stopAnimating()
+            }
         }
     }
 }

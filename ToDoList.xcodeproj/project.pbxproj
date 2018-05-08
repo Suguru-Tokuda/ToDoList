@@ -15,6 +15,7 @@
 		BB165611209E3F22008CA3B8 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB165610209E3F22008CA3B8 /* SignUpViewController.swift */; };
 		BB165613209E3FA0008CA3B8 /* SignUpConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB165612209E3FA0008CA3B8 /* SignUpConfirmationViewController.swift */; };
 		BB165615209E43A6008CA3B8 /* ItemsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB165614209E43A6008CA3B8 /* ItemsTableViewController.swift */; };
+		BB4A1A2020A21582005ED859 /* InvitationsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB4A1A1F20A21582005ED859 /* InvitationsTableViewController.swift */; };
 		BBAF49E120A158BF00804385 /* ArchivedListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBAF49E020A158BF00804385 /* ArchivedListTableViewController.swift */; };
 		BBF77F6C209279EF008D35C7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF77F6B209279EF008D35C7 /* AppDelegate.swift */; };
 		BBF77F71209279EF008D35C7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BBF77F6F209279EF008D35C7 /* Main.storyboard */; };
@@ -35,6 +36,7 @@
 		BB165610209E3F22008CA3B8 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		BB165612209E3FA0008CA3B8 /* SignUpConfirmationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpConfirmationViewController.swift; sourceTree = "<group>"; };
 		BB165614209E43A6008CA3B8 /* ItemsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsTableViewController.swift; sourceTree = "<group>"; };
+		BB4A1A1F20A21582005ED859 /* InvitationsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationsTableViewController.swift; sourceTree = "<group>"; };
 		BBAF49E020A158BF00804385 /* ArchivedListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchivedListTableViewController.swift; sourceTree = "<group>"; };
 		BBF77F68209279EF008D35C7 /* ToDoList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDoList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BBF77F6B209279EF008D35C7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -75,6 +77,7 @@
 			isa = PBXGroup;
 			children = (
 				BBAF49E020A158BF00804385 /* ArchivedListTableViewController.swift */,
+				BB4A1A1F20A21582005ED859 /* InvitationsTableViewController.swift */,
 				BB165614209E43A6008CA3B8 /* ItemsTableViewController.swift */,
 				BBF77F7D20927ABF008D35C7 /* ListTableTableViewController.swift */,
 				BB16560E209E3F14008CA3B8 /* SignInViewController.swift */,
@@ -196,6 +199,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BB16560F209E3F14008CA3B8 /* SignInViewController.swift in Sources */,
+				BB4A1A2020A21582005ED859 /* InvitationsTableViewController.swift in Sources */,
 				BBF77F7E20927ABF008D35C7 /* ListTableTableViewController.swift in Sources */,
 				BBF77F8420928144008D35C7 /* User.swift in Sources */,
 				BBAF49E120A158BF00804385 /* ArchivedListTableViewController.swift in Sources */,

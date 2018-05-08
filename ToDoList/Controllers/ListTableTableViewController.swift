@@ -37,6 +37,9 @@ class ListTableTableViewController: UIViewController {
     var buildFromHistoryBtn: UIBarButtonItem?
     var addListBtn: UIBarButtonItem?
     var logoutBtn: UIBarButtonItem?
+    var invitationBtn: UIBarButtonItem?
+    
+    var hasShownNotification: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,7 +48,10 @@ class ListTableTableViewController: UIViewController {
         isLoggedIn = appDelegate!.isLoggedIn
         
         buildFromHistoryBtn = UIBarButtonItem(image: UIImage(named: "stopWatch"), style: .plain, target: self, action: #selector(buildFromHistoryBtnTapped))
+        invitationBtn = UIBarButtonItem(image: UIImage(named: "invite"), style: .plain, target: self, action: #selector(invitationBtnTapped))
+        self.navigationItem.setLeftBarButtonItems([buildFromHistoryBtn!, invitationBtn!], animated: true)
         self.navigationItem.setLeftBarButton(buildFromHistoryBtn!, animated: true)
+        
         
         if !isLoggedIn! {
             performSegue(withIdentifier: "goBackToLogin", sender: self)
@@ -152,6 +158,11 @@ extension ListTableTableViewController {
         if segue.identifier == "goToItems" {
             let itemsTableViewController = segue.destination as? ItemsTableViewController
             itemsTableViewController?.listToShow = self.listToShow!
+        } else if segue.identifier == "goToInvitations" {
+            let invitationsViewController = segue.destination as? InvitationsTableViewController
+            invitationsViewController?.listsToAccept = self.listsToAccept
+            invitationsViewController?.allUsers = self.allUsers
+            invitationsViewController?.listUserAssigns = self.listUserAssigns
         }
     }
     
@@ -192,68 +203,28 @@ extension ListTableTableViewController {
         self.performSegue(withIdentifier: "goToArchivedLists", sender: self)
     }
     
-    private func showAcceptPrompts() {
-        for list in listsToAccept {
-            let alert = UIAlertController(title: "Accept an invitation?", message: "\(list.title) from ", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (_) in
-                let listId = list.id
-                var listUserAssignToPut: ListUserAssign?
-                for listUserAssign in self.listUserAssigns {
-                    if listUserAssign.listId == listId {
-                        listUserAssignToPut = listUserAssign
-                    }
-                }
-                let putListUserAssignGroup = DispatchGroup()
-                putListUserAssignGroup.enter()
-                listUserAssignToPut?.accepted = true
-                self.toDoListDataStore.postPutListUserAssign(method: "PUT", listUserAssign: listUserAssignToPut!, completion: { (result) in
-                    switch result {
-                    case let .success(response):
-                        print(response)
-                    case let .failure(error):
-                        print(error)
-                    }
-                    putListUserAssignGroup.leave()
-                })
-                putListUserAssignGroup.notify(queue: .main, execute: {
-                    self.getLists()
-                })
-            }))
-            alert.addAction(UIAlertAction(title: "No", style: .default, handler: { (_) in
-                let listId = list.id
-                var listUserAssignToDelete: ListUserAssign?
-                for listUserAssign in self.listUserAssigns {
-                    if listUserAssign.listId == listId {
-                        listUserAssignToDelete = listUserAssign
-                    }
-                }
-                let deleteListUserAssignGroup = DispatchGroup()
-                deleteListUserAssignGroup.enter()
-                self.toDoListDataStore.deleteListUserAssign(id: listUserAssignToDelete!.id, completion: { (result) in
-                    switch result {
-                    case let .success(response):
-                        print(response)
-                    case let .failure(error):
-                        print(error)
-                    }
-                    deleteListUserAssignGroup.leave()
-                })
-                deleteListUserAssignGroup.notify(queue: .main, execute: {
-                    self.getLists()
-                })
-            }))
-            self.present(alert, animated: true, completion: nil)
-        }
+    @objc func invitationBtnTapped() {
+        self.performSegue(withIdentifier: "goToInvitations", sender: self)
     }
     
-    private func createList(title: String, userId: String) {
-        // show activityIndicatorView
+    private func showInvitationAlert() {
+        let alert = UIAlertController(title: "You've got \(listsToAccept.count) invitations", message: "Tap the envelop button in the bar and see the lsit of invitations.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    private func startActivityIndicator() {
         activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
         activityIndicatorView?.startAnimating()
         activityIndicatorView?.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(activityIndicatorView!)
         activityIndicatorView?.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         activityIndicatorView?.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
+    }
+    
+    private func createList(title: String, userId: String) {
+        // show activityIndicatorView
+        startActivityIndicator()
         
         let getAllListsGroup = DispatchGroup()
         var lists: [List]?
@@ -356,13 +327,7 @@ extension ListTableTableViewController {
     }
     
     private func getLists() {
-        
-        activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
-        activityIndicatorView?.startAnimating()
-        activityIndicatorView?.translatesAutoresizingMaskIntoConstraints = false
-        self.view.addSubview(activityIndicatorView!)
-        activityIndicatorView?.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        activityIndicatorView?.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
+        startActivityIndicator()
         
         let getListUserAssignsDispatchGroup = DispatchGroup()
         getListUserAssignsDispatchGroup.enter()
@@ -423,7 +388,10 @@ extension ListTableTableViewController {
             self.lists = self.activeLists
             self.activityIndicatorView?.stopAnimating()
             if self.listIdsToAccept.count > 0 {
-                self.showAcceptPrompts()
+                if !self.hasShownNotification {
+                    self.showInvitationAlert()
+                    self.hasShownNotification = true
+                }
             }
             self.listTableView.reloadData()
         }

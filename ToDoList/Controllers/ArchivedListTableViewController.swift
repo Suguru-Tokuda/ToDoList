@@ -24,6 +24,7 @@ class ArchivedListTableViewController: UIViewController {
         archivedListTableView.dataSource = self
         appDelegate = UIApplication.shared.delegate as? AppDelegate
         isLoggedIn = appDelegate!.isLoggedIn
+        self.navigationItem.title = "Build from History"
         
         if !isLoggedIn! {
             performSegue(withIdentifier: "goBackToLogin", sender: self)
