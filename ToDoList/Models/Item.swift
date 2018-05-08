@@ -12,14 +12,14 @@ public struct Item {
     
     private var _id: String?
     private var _userId: String?
-    private var _desc: String?
+    private var _itemDescription: String?
     private var _isImportant: Bool?
     private var _isComplete: Bool?
     
-    public init(id: String, userId: String, desc: String, isImportant: Bool, isComplete: Bool) {
+    public init(id: String, userId: String, itemDescription: String, isImportant: Bool, isComplete: Bool) {
         self._id = id
         self._userId = userId
-        self._desc = desc
+        self._itemDescription = itemDescription
         self._isImportant = isImportant
         self._isComplete = isComplete
     }
@@ -42,12 +42,12 @@ public struct Item {
         }
     }
     
-    public var desc: String {
+    public var itemDescription: String {
         get {
-            return _desc!
+            return _itemDescription!
         }
         set(description) {
-            self._desc = description
+            self._itemDescription = description
         }
     }
     

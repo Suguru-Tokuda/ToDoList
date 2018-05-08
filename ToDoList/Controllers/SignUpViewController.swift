@@ -33,6 +33,7 @@ class SignUpViewController: UIViewController {
     let dispatchGroupToGetUsers: DispatchGroup = DispatchGroup()
     let dispatchGroupToCheckEmailAvailability: DispatchGroup = DispatchGroup()
     var isEmailAvailable = true
+    var activityIndicatorView: UIActivityIndicatorView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -130,6 +131,12 @@ class SignUpViewController: UIViewController {
     }
     
     private func signUpUser(firstName: String, lastName: String, email: String, password: String) {
+        activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+        activityIndicatorView?.startAnimating()
+        activityIndicatorView?.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(activityIndicatorView!)
+        activityIndicatorView?.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        activityIndicatorView?.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
         let getAllUsersGroup = DispatchGroup()
         getAllUsersGroup.enter()
         toDoListDataStore.getUsers(userId: nil) { (usersResult) in
@@ -161,13 +168,24 @@ class SignUpViewController: UIViewController {
                     }
                 }
             }
-            
+            let insertUserGroup = DispatchGroup()
+            insertUserGroup.enter()
             let userToInsert = User(id: idCandidate.description, firstName: firstName, lastName: lastName, email: email, password: password)
-            self.toDoListDataStore.postPutUser(method: "POST", user: userToInsert)
-            self.firstNameToSegue = firstName
-            self.lastNameToSegue = lastName
-            self.emailToSegue = email
-            self.performSegue(withIdentifier: "goToSignupConfirmation", sender: self)
+            self.toDoListDataStore.postPutUser(method: "POST", user: userToInsert, completion: { (result) in
+                switch result {
+                case let .success(response):
+                    print(response)
+                case let .failure(error):
+                    print(error)
+                }
+                insertUserGroup.leave()
+            })
+            insertUserGroup.notify(queue: .main, execute: {
+                self.firstNameToSegue = firstName
+                self.lastNameToSegue = lastName
+                self.emailToSegue = email
+                self.performSegue(withIdentifier: "goToSignupConfirmation", sender: self)
+            })
         })
     }
     

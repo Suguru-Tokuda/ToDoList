@@ -33,6 +33,11 @@ enum ListUserAssignResult {
     case failure(Error)
 }
 
+enum PostPutDeleteResult {
+    case success(Data)
+    case failure(Error)
+}
+
 public class ToDoListDataStore {
     
     private let session: URLSession = {
@@ -54,7 +59,7 @@ public class ToDoListDataStore {
             OperationQueue.main.addOperation {
                 completion(result)
             }
-            }.resume()
+        }.resume()
     }
     
     func getLists(listId: String?, completion: @escaping (ListsResult) -> Void) {
@@ -86,7 +91,7 @@ public class ToDoListDataStore {
             OperationQueue.main.addOperation {
                 completion(result)
             }
-            }.resume()
+        }.resume()
     }
     
     func getItemListAssigns(itemListAssignId: String?, completion: @escaping (ItemListAssignResult) -> Void) {
@@ -122,7 +127,7 @@ public class ToDoListDataStore {
     }
     
     //MARK: POST/PUT Request
-    func postPutUser(method: String, user: User) {
+    func postPutUser(method: String, user: User, completion: @escaping (PostPutDeleteResult) -> Void) {
         let parameters = ["id": user.id, "firstName": user.firstName, "lastName": user.lastName, "email": user.email, "password": user.password]
         var url: URL?
         if method == "POST" {
@@ -137,20 +142,16 @@ public class ToDoListDataStore {
             return
         }
         request.httpBody = httpBody
-        session.dataTask(with: request) { (data, response, error) in
-            if let response = response {
-                print(response)
+        session.dataTask(with: request) {
+            (data, response, error) -> Void in
+            let result = self.processPostPutDeleteRequest(data: data, error: error)
+            OperationQueue.main.addOperation {
+                completion(result)
             }
-            if let data = data {
-                print(data)
-            }
-            if let error = error {
-                print(error)
-            }
-            }.resume()
+        }.resume()
     }
     
-    func postPutList(method: String, list: List) {
+    func postPutList(method: String, list: List, completion: @escaping (PostPutDeleteResult) -> Void) {
         let parameters = ["id": list.id, "title": list.title, "isArchived": list.isArchived.description]
         var url: URL?
         if method == "POST" {
@@ -165,25 +166,23 @@ public class ToDoListDataStore {
             return
         }
         request.httpBody = httpBody
-        session.dataTask(with: request) { (data, response, error) in
-            if let response = response {
-                print(response)
-            }
-            if let data = data {
-                print(data)
-            }
-            if let error = error {
-                print(error)
+        session.dataTask(with: request) {
+            (data, response, error) -> Void in
+            let result = self.processPostPutDeleteRequest(data: data, error: error)
+            OperationQueue.main.addOperation {
+                completion(result)
             }
             }.resume()
     }
     
-    func postPutItem(method: String, item: Item) {
-        let parameters = ["id": item.id, "userId": item.userId, "desc": item.desc, "isImportant": item.isImportant.description]
+    func postPutItem(method: String, item: Item, completion: @escaping (PostPutDeleteResult) -> Void) {
+        var parameters = [String: String]()
         var url: URL?
         if method == "POST" {
+            parameters = ["id": item.id, "userId": item.userId, "itemDescription": item.itemDescription, "isImportant": item.isImportant.description, "isComplete": item.isComplete.description]
             url = ToDoListAPI.getItemsRequestURL(method: .noParams, itemId: nil)
         } else if method == "PUT" {
+            parameters = ["userId": item.userId, "itemDescription": item.itemDescription, "isImportant": item.isImportant.description, "isComplete": item.isComplete.description]
             url = ToDoListAPI.getItemsRequestURL(method: .noParams, itemId: item.id)
         }
         var request = URLRequest(url: url!)
@@ -193,20 +192,16 @@ public class ToDoListDataStore {
             return
         }
         request.httpBody = httpBody
-        session.dataTask(with: request) { (data, response, error) in
-            if let response = response {
-                print(response)
-            }
-            if let data = data {
-                print(data)
-            }
-            if let error = error {
-                print(error)
+        session.dataTask(with: request) {
+            (data, response, error) -> Void in
+            let result = self.processPostPutDeleteRequest(data: data, error: error)
+            OperationQueue.main.addOperation {
+                completion(result)
             }
             }.resume()
     }
     
-    func postPutItemListAssign(method: String, itemListAssign: ItemListAssign) {
+    func postPutItemListAssign(method: String, itemListAssign: ItemListAssign, completion: @escaping (PostPutDeleteResult) -> Void) {
         let parameters = ["id": itemListAssign.id, "itemId": itemListAssign.itemId, "listId": itemListAssign.listId]
         var url: URL?
         if method == "POST" {
@@ -221,20 +216,16 @@ public class ToDoListDataStore {
             return
         }
         request.httpBody = httpBody
-        session.dataTask(with: request) { (data, response, error) in
-            if let response = response {
-                print(response)
-            }
-            if let data = data {
-                print(data)
-            }
-            if let error = error {
-                print(error)
+        session.dataTask(with: request) {
+            (data, response, error) -> Void in
+            let result = self.processPostPutDeleteRequest(data: data, error: error)
+            OperationQueue.main.addOperation {
+                completion(result)
             }
             }.resume()
     }
     
-    func postPutListUserAssign(method: String, listUserAssign: ListUserAssign) {
+    func postPutListUserAssign(method: String, listUserAssign: ListUserAssign, completion: @escaping (PostPutDeleteResult) -> Void) {
         let parameters = ["id": listUserAssign.id, "userId": listUserAssign.userId, "listId": listUserAssign.listId]
         var url: URL?
         if method == "POST" {
@@ -249,108 +240,79 @@ public class ToDoListDataStore {
             return
         }
         request.httpBody = httpBody
-        session.dataTask(with: request) { (data, response, error) in
-            if let response = response {
-                print(response)
+        session.dataTask(with: request) {
+            (data, response, error) -> Void in
+            let result = self.processPostPutDeleteRequest(data: data, error: error)
+            OperationQueue.main.addOperation {
+                completion(result)
             }
-            if let data = data {
-                print(data)
-            }
-            if let error = error {
-                print(error)
-            }
-            }.resume()
+        }.resume()
     }
     
     //MARK: DELETE Requests
-    func deleteUser(id: String) {
+    func deleteUser(id: String, completion: @escaping (PostPutDeleteResult) -> Void) {
         let url = ToDoListAPI.getUsersRequestURL(method: .noParams, userId: id)
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
-        session.dataTask(with: request) { (data, response, error) in
-            if let response = response {
-                print(response)
-            }
-            if let data = data {
-                print(data)
-            }
-            if let error = error {
-                print(error)
+        session.dataTask(with: request) {
+            (data, response, error) -> Void in
+            let result = self.processPostPutDeleteRequest(data: data, error: error)
+            OperationQueue.main.addOperation {
+                completion(result)
             }
         }.resume()
     }
     
-    func deleteList(id: String) {
+    func deleteList(id: String, completion: @escaping (PostPutDeleteResult) -> Void) {
         let url = ToDoListAPI.getListsRequestURL(method: .noParams, listId: id)
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
-        session.dataTask(with: request) { (data, response, error) in
-            if let response = response {
-                print(response)
-            }
-            if let data = data {
-                print(data)
-            }
-            if let error = error {
-                print(error)
+        session.dataTask(with: request) {
+            (data, response, error) -> Void in
+            let result = self.processPostPutDeleteRequest(data: data, error: error)
+            OperationQueue.main.addOperation {
+                completion(result)
             }
         }.resume()
     }
     
-    func deleteItem(id: String) {
+    func deleteItem(id: String, completion: @escaping (PostPutDeleteResult) -> Void) {
         let url = ToDoListAPI.getItemsRequestURL(method: .noParams, itemId: id)
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
-        session.dataTask(with: request) { (data, response, error) in
-            if let response = response {
-                print(response)
-            }
-            if let data = data {
-                print(data)
-            }
-            if let error = error {
-                print(error)
+        session.dataTask(with: request) {
+            (data, response, error) -> Void in
+            let result = self.processPostPutDeleteRequest(data: data, error: error)
+            OperationQueue.main.addOperation {
+                completion(result)
             }
         }.resume()
     }
-    
-    func deleteItemListAssign(id: String) {
+
+    func deleteItemListAssign(id: String, completion: @escaping (PostPutDeleteResult) -> Void) {
         let url = ToDoListAPI.getItemListAssignsURL(method: .noParams, itemListAssignId: id)
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
-        session.dataTask(with: request) { (data, response, error) in
-            if let response = response {
-                print(response)
-            }
-            if let data = data {
-                print(data)
-            }
-            if let error = error {
-                print(error)
+        session.dataTask(with: request) {
+            (data, response, error) -> Void in
+            let result = self.processPostPutDeleteRequest(data: data, error: error)
+            OperationQueue.main.addOperation {
+                completion(result)
             }
         }.resume()
     }
     
-    func deleteListUserAssign(id: String) {
+    func deleteListUserAssign(id: String, completion: @escaping (PostPutDeleteResult) -> Void) {
         let url = ToDoListAPI.getListUserAssignURL(method: .noParams, listUserAssignId: id)
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
-        session.dataTask(with: request) { (data, response, error) in
-            if let response = response {
-                print(response)
+        session.dataTask(with: request) {
+            (data, response, error) -> Void in
+            let result = self.processPostPutDeleteRequest(data: data, error: error)
+            OperationQueue.main.addOperation {
+                completion(result)
             }
-            if let data = data {
-                do {
-                    let json = try JSONSerialization.data(withJSONObject: data, options: [])
-                    print(json)
-                } catch {
-                    print(error)
-                }
-            }
-            if let error = error {
-                print(error)
-            }
-        }
+        }.resume()
     }
     
     //MARK: private funcs to send data back to ToDoListAPI class
@@ -387,6 +349,13 @@ public class ToDoListDataStore {
             return .failure(error!)
         }
         return ToDoListAPI.getListUserAssignResult(fromJSON: jsonData)
+    }
+    
+    private func processPostPutDeleteRequest(data: Data?, error: Error?) -> PostPutDeleteResult {
+        guard let jsonData = data else {
+            return .failure(error!)
+        }
+        return ToDoListAPI.getPostPutDeleteResult(fromJSON: jsonData)
     }
     
 }

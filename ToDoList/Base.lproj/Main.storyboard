@@ -6,7 +6,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -174,7 +173,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="uqL-HV-aKL">
-                                <rect key="frame" x="16" y="107" width="144" height="225"/>
+                                <rect key="frame" x="16" y="151" width="144" height="225"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="First Name:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hWJ-wB-U6O">
                                         <rect key="frame" x="0.0" y="0.0" width="88" height="21"/>
@@ -233,7 +232,7 @@
                                 </constraints>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sign up" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kLv-G0-0xw">
-                                <rect key="frame" x="119.5" y="51" width="136" height="36"/>
+                                <rect key="frame" x="119.5" y="95" width="136" height="36"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="36" id="0Wa-g7-egS"/>
                                     <constraint firstAttribute="width" constant="136" id="zaK-df-bRR"/>
@@ -243,7 +242,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="yE6-EZ-HZm">
-                                <rect key="frame" x="189" y="107" width="170" height="230"/>
+                                <rect key="frame" x="189" y="151" width="170" height="230"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fcU-UD-ILG">
                                         <rect key="frame" x="0.0" y="0.0" width="170" height="30"/>
@@ -301,7 +300,7 @@
                                 </constraints>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vht-3e-rdT">
-                                <rect key="frame" x="16" y="376" width="0.0" height="200"/>
+                                <rect key="frame" x="16" y="420" width="0.0" height="200"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="200" id="iUJ-3s-sFu" userLabel="height = 50"/>
                                 </constraints>
@@ -310,7 +309,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="D2s-GZ-S3G">
-                                <rect key="frame" x="137.5" y="433" width="100" height="80"/>
+                                <rect key="frame" x="137.5" y="477" width="100" height="80"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eOl-tX-drx">
                                         <rect key="frame" x="0.0" y="0.0" width="100" height="30"/>
@@ -387,7 +386,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="CgA-gA-Pdn">
-                                <rect key="frame" x="36" y="127" width="88" height="123"/>
+                                <rect key="frame" x="36" y="171" width="88" height="123"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="First Name:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vHi-Ht-VqO">
                                         <rect key="frame" x="0.0" y="0.0" width="88" height="21"/>
@@ -426,7 +425,7 @@
                                 </constraints>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sign up Success" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7hc-g2-cQf">
-                                <rect key="frame" x="63" y="51" width="249" height="36"/>
+                                <rect key="frame" x="63" y="95" width="249" height="36"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="36" id="CMf-Ti-iTh"/>
                                     <constraint firstAttribute="width" constant="249" id="CvQ-Hc-PmF"/>
@@ -436,7 +435,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="Lgo-Az-cqt">
-                                <rect key="frame" x="159" y="127" width="216" height="123"/>
+                                <rect key="frame" x="159" y="171" width="216" height="123"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XsT-4y-VfH">
                                         <rect key="frame" x="0.0" y="0.0" width="216" height="21"/>
@@ -475,7 +474,7 @@
                                 </constraints>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UUN-QP-czf">
-                                <rect key="frame" x="155" y="413" width="65" height="30"/>
+                                <rect key="frame" x="155" y="457" width="65" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="65" id="g2Y-NM-SWk"/>
                                     <constraint firstAttribute="height" constant="30" id="ioc-me-P6w"/>
@@ -509,6 +508,42 @@
             </objects>
             <point key="canvasLocation" x="1685.5999999999999" y="994.45277361319347"/>
         </scene>
+        <!--Archived List Table View Controller-->
+        <scene sceneID="iZu-4Y-Q1U">
+            <objects>
+                <viewController id="fHy-6A-XPP" customClass="ArchivedListTableViewController" customModule="ToDoList" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="qba-AD-Mf4">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="6ZT-gR-O8C">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="archivedListCell" id="W7z-Ab-ScF">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="W7z-Ab-ScF" id="xLr-bO-jO3">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="nfa-Z0-Vmw"/>
+                    </view>
+                    <connections>
+                        <outlet property="archivedListTableView" destination="6ZT-gR-O8C" id="woq-KD-jVG"/>
+                        <segue destination="UFh-Be-8i6" kind="show" identifier="goBackToLogin" id="tdo-NP-29Y"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="a0H-c1-uvo" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="844" y="-695.80209895052474"/>
+        </scene>
         <!--List Table Table View Controller-->
         <scene sceneID="c19-fD-mwe">
             <objects>
@@ -540,24 +575,12 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="hBX-ga-NoR"/>
                     </view>
-                    <navigationItem key="navigationItem" id="avE-vM-2cr">
-                        <rightBarButtonItems>
-                            <barButtonItem systemItem="add" id="KK7-Zy-rwC">
-                                <connections>
-                                    <action selector="addListBtnTapped:" destination="xzI-Qm-ZXf" id="Ta0-Fe-RdV"/>
-                                </connections>
-                            </barButtonItem>
-                            <barButtonItem title="Logout" id="dK1-Bb-PcK">
-                                <connections>
-                                    <action selector="logoutBtnTapped:" destination="xzI-Qm-ZXf" id="Dlf-Wi-3zU"/>
-                                </connections>
-                            </barButtonItem>
-                        </rightBarButtonItems>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="avE-vM-2cr"/>
                     <connections>
                         <outlet property="listTableView" destination="lU3-51-yIs" id="q3e-9U-Pij"/>
                         <segue destination="69b-4z-arD" kind="show" identifier="goToItems" id="43h-Hl-Cra"/>
                         <segue destination="UFh-Be-8i6" kind="show" identifier="goBackToLogin" id="nrb-xM-FDc"/>
+                        <segue destination="fHy-6A-XPP" kind="show" identifier="goToArchivedLists" id="IKw-VI-s6D"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="q9U-V5-jTG" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -598,6 +621,7 @@
                     <navigationItem key="navigationItem" id="xKI-FZ-LmW"/>
                     <connections>
                         <outlet property="itemsTableView" destination="4Q2-dN-WP0" id="KSc-FW-W1L"/>
+                        <segue destination="UFh-Be-8i6" kind="show" identifier="goBackToLogin" id="Z3D-Ok-Ear"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1Fm-yY-vJf" userLabel="First Responder" sceneMemberID="firstResponder"/>

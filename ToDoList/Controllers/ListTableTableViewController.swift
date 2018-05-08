@@ -61,14 +61,12 @@ class ListTableTableViewController: UIViewController {
         logoutBtn = UIBarButtonItem(image: UIImage(named: "exit"), style: .plain, target: self, action: #selector(logoutBtnTapped))
         
         self.navigationItem.setRightBarButtonItems([addListBtn!, logoutBtn!], animated: true)
-        
-        getLists()
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
+    override func viewWillAppear(_ animated: Bool) {
+        self.getLists()
     }
-
+    
 }
 
 extension ListTableTableViewController: UITableViewDelegate, UITableViewDataSource {
@@ -86,17 +84,25 @@ extension ListTableTableViewController: UITableViewDelegate, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         var actions = [UITableViewRowAction]()
-        if (showCompleted) {
-            let delete = UITableViewRowAction(style: .normal, title: "Remove") { action, index in
-                print("delete button tapped")
-            }
-            actions.append(delete)
-        } else {
-            let complete = UITableViewRowAction(style: .normal, title: "Complete") { action, index in
-                print("Complete button tapped")
-            }
-            actions.append(complete)
+        let complete = UITableViewRowAction(style: .normal, title: "Archive") { action, index in
+            let listToPut = self.lists[indexPath.row]
+            listToPut.isArchived = true
+            let putListGroup = DispatchGroup()
+            putListGroup.enter()
+            self.toDoListDataStore.postPutList(method: "PUT", list: listToPut, completion: { (result) in
+                switch result {
+                case let .success(response):
+                    print(response)
+                case let .failure(error):
+                    print(error)
+                }
+                putListGroup.leave()
+            })
+            putListGroup.notify(queue: .main, execute: {
+                self.getLists()
+            })
         }
+        actions.append(complete)
         return actions
     }
     
@@ -125,12 +131,18 @@ extension ListTableTableViewController: UISearchResultsUpdating {
 
 // MARK: Custom functions
 extension ListTableTableViewController {
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "goToItems" {
             let itemsTableViewController = segue.destination as? ItemsTableViewController
             itemsTableViewController?.listToShow = self.listToShow!
         }
+    }
+    
+    private func resetAllLists() {
+        allLists.removeAll()
+        activeLists.removeAll()
+        filteredLists.removeAll()
+        lists.removeAll()
     }
     
     @objc func logoutBtnTapped() {
@@ -152,10 +164,18 @@ extension ListTableTableViewController {
     }
     
     @objc func buildFromHistoryBtnTapped() {
-        //TODO
+        self.performSegue(withIdentifier: "goToArchivedLists", sender: self)
     }
     
     private func createList(title: String, userId: String) {
+        // show activityIndicatorView
+        activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+        activityIndicatorView?.startAnimating()
+        activityIndicatorView?.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(activityIndicatorView!)
+        activityIndicatorView?.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        activityIndicatorView?.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
+        
         let getAllListsGroup = DispatchGroup()
         var lists: [List]?
         getAllListsGroup.enter()
@@ -188,50 +208,77 @@ extension ListTableTableViewController {
                     }
                 }
             }
+            let insertListGroup = DispatchGroup()
+            insertListGroup.enter()
             
             let listToInsert = List(id: idCandidate.description, title: title, isArchived: false)
-            self.toDoListDataStore.postPutList(method: "POST", list: listToInsert)
-            let allListUserAssignGroup = DispatchGroup()
-            var listUserAssigns: [ListUserAssign]?
-            allListUserAssignGroup.enter()
-            
-            self.toDoListDataStore.getListUserAssigns(listUserAssignId: nil, completion: { (listUserAssignsResult) in
-                switch listUserAssignsResult {
+            self.toDoListDataStore.postPutList(method: "POST", list: listToInsert, completion: { (result) in
+                switch result {
                 case let .success(response):
-                    listUserAssigns = response
+                    print(response)
                 case let .failure(error):
                     print(error)
                 }
-                allListUserAssignGroup.leave()
+                insertListGroup.leave()
             })
-            
-            allListUserAssignGroup.notify(queue: .main, execute: {
-                idCandidate = arc4random_uniform(1000) + 1
-                uniqueCounter = 0
-                max = listUserAssigns!.count
+            insertListGroup.notify(queue: .main, execute: {
+                let allListUserAssignGroup = DispatchGroup()
+                var listUserAssigns: [ListUserAssign]?
+                allListUserAssignGroup.enter()
                 
-                while uniqueCounter != max {
-                    for i in 0...max {
-                        if i == max && uniqueCounter != max {
-                            uniqueCounter = 0 // reset the counter to 0
-                            idCandidate = arc4random_uniform(1000) + 1
-                            break
-                        }
-                        if i != max {
-                            if listUserAssigns![i].id != idCandidate.description {
-                                uniqueCounter += 1
+                self.toDoListDataStore.getListUserAssigns(listUserAssignId: nil, completion: { (listUserAssignsResult) in
+                    switch listUserAssignsResult {
+                    case let .success(response):
+                        listUserAssigns = response
+                    case let .failure(error):
+                        print(error)
+                    }
+                    allListUserAssignGroup.leave()
+                })
+                
+                allListUserAssignGroup.notify(queue: .main, execute: {
+                    idCandidate = arc4random_uniform(1000) + 1
+                    uniqueCounter = 0
+                    max = listUserAssigns!.count
+                    
+                    while uniqueCounter != max {
+                        for i in 0...max {
+                            if i == max && uniqueCounter != max {
+                                uniqueCounter = 0 // reset the counter to 0
+                                idCandidate = arc4random_uniform(1000) + 1
+                                break
+                            }
+                            if i != max {
+                                if listUserAssigns![i].id != idCandidate.description {
+                                    uniqueCounter += 1
+                                }
                             }
                         }
                     }
-                }
-                let listUserAssignToInsert = ListUserAssign(id: idCandidate.description, userId: userId, listId: listToInsert.id)
-                self.toDoListDataStore.postPutListUserAssign(method: "POST", listUserAssign: listUserAssignToInsert)
-                self.getLists() // reloads the data after insert.
+                    let insetListUserAssignGroup = DispatchGroup()
+                    insetListUserAssignGroup.enter()
+                    
+                    let listUserAssignToInsert = ListUserAssign(id: idCandidate.description, userId: userId, listId: listToInsert.id)
+                    self.toDoListDataStore.postPutListUserAssign(method: "POST", listUserAssign: listUserAssignToInsert, completion: { (postPutDeleteResult) in
+                        switch postPutDeleteResult {
+                        case let .success(response):
+                            print(response)
+                        case let .failure(error):
+                            print(error)
+                        }
+                        insetListUserAssignGroup.leave()
+                    })
+                    insetListUserAssignGroup.notify(queue: .main, execute: {
+                        self.activityIndicatorView?.stopAnimating()
+                        self.getLists() // reloads the data after insert.
+                    })
+                })
             })
         }
     }
     
     private func getLists() {
+        
         activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
         activityIndicatorView?.startAnimating()
         activityIndicatorView?.translatesAutoresizingMaskIntoConstraints = false

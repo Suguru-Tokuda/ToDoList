@@ -14,12 +14,11 @@ class ItemsTableViewController: UIViewController {
     var user: User?
     var appDelegate: AppDelegate?
     var toDoListDataStore: ToDoListDataStore?
-    var allItems: [Item] = [Item]()
-    var activeItems: [Item] = [Item]()
-    var itemsToShow: [Item] = [Item]()
-    var filteredItems: [Item] = [Item]()
+    var allItems: [Item] = [Item]() // contains all the items
+    var activeItems: [Item] = [Item]() // contains all the items with not completed
+    var itemsToShow: [Item] = [Item]() // contains items to show
+    var filteredItems: [Item] = [Item]() // contains items that are filtered
     var itemIds: [String] = [String]()
-    var inSearch = false
     var showCompleted = false
     
     @IBOutlet weak var itemsTableView: UITableView!
@@ -28,11 +27,18 @@ class ItemsTableViewController: UIViewController {
     var showCompleteItemsBtn: UIButton?
     var addItemBtn: UIBarButtonItem?
     var addToListBtn: UIBarButtonItem?
+    var isLoggedIn: Bool?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         appDelegate = UIApplication.shared.delegate as? AppDelegate
         user = appDelegate!.user
+        isLoggedIn = appDelegate!.isLoggedIn
+        
+        if !isLoggedIn! {
+            performSegue(withIdentifier: "goBackToLogin", sender: self)
+        }
+        
         toDoListDataStore = ToDoListDataStore()
         self.navigationItem.title = listToShow!.title
         searchController.searchResultsUpdater = self
@@ -56,27 +62,14 @@ class ItemsTableViewController: UIViewController {
 
 extension ItemsTableViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if inSearch {
-            return self.filteredItems.count
-        } else {
-            if showCompleted {
-                return self.allItems.count
-            } else {
-                return activeItems.count
-            }
-        }
+        return itemsToShow.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "itemCell", for: indexPath)
-        var item: Item?
-        if inSearch {
-            item = self.filteredItems[indexPath.row]
-        } else {
-            item = self.allItems[indexPath.row]
-        }
-        cell.textLabel!.text = item!.desc
-        if item!.isImportant {
+        var item: Item = self.itemsToShow[indexPath.row]
+        cell.textLabel!.text = item.itemDescription
+        if item.isImportant {
             cell.textLabel!.textColor = UIColor.red
         }
         return cell
@@ -93,7 +86,20 @@ extension ItemsTableViewController: UITableViewDelegate, UITableViewDataSource {
             let complete = UITableViewRowAction(style: .normal, title: "Complete") { action, index in
                 var item = self.allItems[indexPath.row]
                 item.isComplete = true
-                self.toDoListDataStore?.postPutItem(method: "PUT", item: item)
+                let updateItemGroup = DispatchGroup()
+                updateItemGroup.enter()
+                self.toDoListDataStore?.postPutItem(method: "PUT", item: item, completion: { (result) in
+                    switch result {
+                    case let .success(response):
+                        print(response)
+                        updateItemGroup.leave()
+                    case let .failure(error):
+                        print(error)
+                    }
+                })
+                updateItemGroup.notify(queue: .main, execute: {
+                    self.getItems(listId: self.listToShow!.id)
+                })
             }
             actions.append(complete)
         }
@@ -122,13 +128,13 @@ extension ItemsTableViewController {
     @objc func showCompleteBtnTapped() {
         showCompleted = !showCompleted
         if showCompleted {
-            self.itemsToShow = self.activeItems
-            
+            self.itemsToShow = self.allItems
             showCompleteItemsBtn!.setTitle("Hide Completed Items", for: .normal)
         } else {
-            self.itemsToShow = self.allItems
+            self.itemsToShow = self.activeItems
             showCompleteItemsBtn!.setTitle("Show Completed Items", for: .normal)
         }
+        itemsTableView.reloadData()
     }
     
     @objc func addToGroupBtnTapped() {
@@ -138,16 +144,33 @@ extension ItemsTableViewController {
         }
         alert.addAction(UIAlertAction(title: "Add", style: .default, handler: { [weak alert] (_) in
             let email = alert!.textFields![0].text
+            if email!.isEmpty {
+                let emptyAlert = UIAlertController(title: "Fill in the blank", message: "Enter an email", preferredStyle: .alert)
+                emptyAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                self.present(emptyAlert, animated: true)
+            }
+            if email!.lowercased() == self.user!.email {
+                let sameEmailAlert = UIAlertController(title: "You cannot add yourself.", message: "Enter a different email.", preferredStyle: .alert)
+                sameEmailAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                self.present(sameEmailAlert, animated: true)
+            }
             if self.isValidEmail(email: email!) {
                 self.addToGroup(email: email!)
             } else {
                 let emailAlert = UIAlertController(title: "Invalid email", message: "Enter valid email", preferredStyle: .alert)
-                alert?.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                emailAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                 self.present(emailAlert, animated: true)
             }
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    private func resetAllItems() {
+        allItems.removeAll()
+        activeItems.removeAll()
+        itemsToShow.removeAll()
+        filteredItems.removeAll()
     }
     
     private func isValidEmail(email: String) -> Bool {
@@ -157,9 +180,17 @@ extension ItemsTableViewController {
     }
     
     private func addToGroup(email: String) {
+        activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+        activityIndicatorView?.startAnimating()
+        activityIndicatorView?.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(activityIndicatorView!)
+        activityIndicatorView?.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        activityIndicatorView?.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
+        
         let getAllUsersGroup = DispatchGroup()
         var users: [User]?
         var userId: String?
+        
         getAllUsersGroup.enter()
         toDoListDataStore?.getUsers(userId: nil, completion: { (usersResult) in
             switch usersResult {
@@ -172,10 +203,19 @@ extension ItemsTableViewController {
         })
         
         getAllUsersGroup.notify(queue: .main) {
+            var userFound = false
             for user in users! {
                 if user.email.lowercased() == email.lowercased() {
                     userId = user.id
+                    userFound = true
                 }
+            }
+            if !userFound {
+                let userExistsAlert = UIAlertController(title: "Could not found a user for the email", message: "Choose Different Email", preferredStyle: .alert)
+                userExistsAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                self.present(userExistsAlert, animated: true)
+                self.activityIndicatorView?.stopAnimating()
+                return
             }
             
             let getAllListUserAssignsGroup = DispatchGroup()
@@ -197,6 +237,7 @@ extension ItemsTableViewController {
                         let userExistsAlert = UIAlertController(title: "The member is already in the list", message: "Choose Different Email", preferredStyle: .alert)
                         userExistsAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                         self.present(userExistsAlert, animated: true)
+                        self.activityIndicatorView?.stopAnimating()
                         return
                     }
                 }
@@ -219,13 +260,35 @@ extension ItemsTableViewController {
                         }
                     }
                 }
+                let insertListUserAssignGrouop = DispatchGroup()
+                insertListUserAssignGrouop.enter()
                 let listUserAssignToInsert = ListUserAssign(id: idCandidate.description, userId: userId!, listId: self.listToShow!.id)
-                self.toDoListDataStore?.postPutListUserAssign(method: "POST", listUserAssign: listUserAssignToInsert)
+                self.toDoListDataStore?.postPutListUserAssign(method: "POST", listUserAssign: listUserAssignToInsert, completion: { (result) in
+                    switch result {
+                    case let .success(response):
+                        print(response)
+                    case let .failure(error):
+                        print(error)
+                    }
+                    insertListUserAssignGrouop.leave()
+                })
+                insertListUserAssignGrouop.notify(queue: .main, execute: {
+                    self.activityIndicatorView?.stopAnimating()
+                    let userExistsAlert = UIAlertController(title: "\(email) was added to the list.", message: "Now the member can see this list", preferredStyle: .alert)
+                    userExistsAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                    self.present(userExistsAlert, animated: true)
+                })
             })
         }
     }
     
     private func createItem(desc: String, isImportant: Bool) {
+        activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+        activityIndicatorView?.startAnimating()
+        activityIndicatorView?.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(activityIndicatorView!)
+        activityIndicatorView?.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        activityIndicatorView?.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
         let getAllItemsGroup = DispatchGroup()
         var items: [Item]?
         getAllItemsGroup.enter()
@@ -259,8 +322,15 @@ extension ItemsTableViewController {
                 }
             }
             
-            let itemToInsert = Item(id: idCandidate.description, userId: self.user!.id, desc: desc, isImportant: isImportant, isComplete: false)
-            self.toDoListDataStore!.postPutItem(method: "POST", item: itemToInsert)
+            let itemToInsert = Item(id: idCandidate.description, userId: self.user!.id, itemDescription: desc, isImportant: isImportant, isComplete: false)
+            self.toDoListDataStore!.postPutItem(method: "POST", item: itemToInsert, completion: { (result) in
+                switch result {
+                case let .success(response):
+                    print(response)
+                case let .failure(error):
+                    print(error)
+                }
+            })
             let allItemListAssignsGroup = DispatchGroup()
             var itemListAssigns: [ItemListAssign]?
             allItemListAssignsGroup.enter()
@@ -294,14 +364,28 @@ extension ItemsTableViewController {
                         }
                     }
                 }
+                let insertItemListAssignGroup = DispatchGroup()
+                insertItemListAssignGroup.enter()
                 let itemListAssignToInsert = ItemListAssign(id: idCandidate.description, itemId: itemToInsert.id, listId: self.listToShow!.id)
-                self.toDoListDataStore?.postPutItemListAssign(method: "POST", itemListAssign: itemListAssignToInsert)
-                self.getItems(listId: self.listToShow!.id)
+                self.toDoListDataStore?.postPutItemListAssign(method: "POST", itemListAssign: itemListAssignToInsert, completion: { (result) in
+                    switch result {
+                        case let .success(response):
+                        print(response)
+                    case let .failure(error):
+                        print(error)
+                    }
+                    insertItemListAssignGroup.leave()
+                })
+                insertItemListAssignGroup.notify(queue: .main, execute: {
+                    self.activityIndicatorView?.stopAnimating()
+                    self.getItems(listId: self.listToShow!.id)
+                })
             })
         }
     }
     
     private func getItems(listId: String) {
+        resetAllItems()
         activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
         activityIndicatorView?.startAnimating()
         activityIndicatorView?.translatesAutoresizingMaskIntoConstraints = false
@@ -353,14 +437,15 @@ extension ItemsTableViewController {
         }
         
         getItemsDispatchGroup.notify(queue: .main) {
-            self.activityIndicatorView?.stopAnimating()
             self.allItems = self.allItems.sorted(by: {$0.isImportant && !$1.isImportant })
             for item in self.allItems {
                 if !item.isComplete {
                     self.activeItems.append(item)
                 }
             }
+            self.itemsToShow = self.activeItems
             self.itemsTableView.reloadData()
+            self.activityIndicatorView?.stopAnimating()
         }
     }
 }
@@ -368,15 +453,19 @@ extension ItemsTableViewController {
 extension ItemsTableViewController: UISearchResultsUpdating {
     // MARK: - Search bar function
     func updateSearchResults(for searchController: UISearchController) {
+        var itemsToSearch = [Item]()
+        if showCompleted {
+            itemsToSearch = self.allItems
+        } else {
+            itemsToSearch = self.activeItems
+        }
         if let searchText = searchController.searchBar.text, !searchText.isEmpty {
-            self.inSearch = true
-            filteredItems = allItems.filter { item in
-                return item.desc.lowercased().contains(searchText.lowercased())
+            filteredItems = itemsToSearch.filter { item in
+                return item.itemDescription.lowercased().contains(searchText.lowercased())
             }
             itemsToShow = filteredItems
         } else {
-            itemsToShow = allItems
-            self.inSearch = false
+            itemsToShow = itemsToSearch
         }
         itemsTableView.reloadData()
     }

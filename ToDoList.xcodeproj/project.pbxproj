@@ -15,6 +15,7 @@
 		BB165611209E3F22008CA3B8 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB165610209E3F22008CA3B8 /* SignUpViewController.swift */; };
 		BB165613209E3FA0008CA3B8 /* SignUpConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB165612209E3FA0008CA3B8 /* SignUpConfirmationViewController.swift */; };
 		BB165615209E43A6008CA3B8 /* ItemsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB165614209E43A6008CA3B8 /* ItemsTableViewController.swift */; };
+		BBAF49E120A158BF00804385 /* ArchivedListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBAF49E020A158BF00804385 /* ArchivedListTableViewController.swift */; };
 		BBF77F6C209279EF008D35C7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF77F6B209279EF008D35C7 /* AppDelegate.swift */; };
 		BBF77F71209279EF008D35C7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BBF77F6F209279EF008D35C7 /* Main.storyboard */; };
 		BBF77F73209279F1008D35C7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BBF77F72209279F1008D35C7 /* Assets.xcassets */; };
@@ -34,6 +35,7 @@
 		BB165610209E3F22008CA3B8 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		BB165612209E3FA0008CA3B8 /* SignUpConfirmationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpConfirmationViewController.swift; sourceTree = "<group>"; };
 		BB165614209E43A6008CA3B8 /* ItemsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsTableViewController.swift; sourceTree = "<group>"; };
+		BBAF49E020A158BF00804385 /* ArchivedListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchivedListTableViewController.swift; sourceTree = "<group>"; };
 		BBF77F68209279EF008D35C7 /* ToDoList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDoList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BBF77F6B209279EF008D35C7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BBF77F70209279EF008D35C7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -72,6 +74,7 @@
 		BB1773A0209E4D450041F158 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				BBAF49E020A158BF00804385 /* ArchivedListTableViewController.swift */,
 				BB165614209E43A6008CA3B8 /* ItemsTableViewController.swift */,
 				BBF77F7D20927ABF008D35C7 /* ListTableTableViewController.swift */,
 				BB16560E209E3F14008CA3B8 /* SignInViewController.swift */,
@@ -109,14 +112,14 @@
 		BBF77F6A209279EF008D35C7 /* ToDoList */ = {
 			isa = PBXGroup;
 			children = (
-				BB1773A1209E4D760041F158 /* API */,
-				BB1773A0209E4D450041F158 /* Controllers */,
-				BB17739F209E4D370041F158 /* Models */,
 				BBF77F77209279F1008D35C7 /* Info.plist */,
 				BBF77F6B209279EF008D35C7 /* AppDelegate.swift */,
 				BBF77F72209279F1008D35C7 /* Assets.xcassets */,
+				BB1773A1209E4D760041F158 /* API */,
+				BB1773A0209E4D450041F158 /* Controllers */,
 				BBF77F74209279F1008D35C7 /* LaunchScreen.storyboard */,
 				BBF77F6F209279EF008D35C7 /* Main.storyboard */,
+				BB17739F209E4D370041F158 /* Models */,
 			);
 			path = ToDoList;
 			sourceTree = "<group>";
@@ -195,6 +198,7 @@
 				BB16560F209E3F14008CA3B8 /* SignInViewController.swift in Sources */,
 				BBF77F7E20927ABF008D35C7 /* ListTableTableViewController.swift in Sources */,
 				BBF77F8420928144008D35C7 /* User.swift in Sources */,
+				BBAF49E120A158BF00804385 /* ArchivedListTableViewController.swift in Sources */,
 				BB16560B209E0A43008CA3B8 /* ToDoListAPI.swift in Sources */,
 				BBF77F8020927DA6008D35C7 /* Item.swift in Sources */,
 				BB165611209E3F22008CA3B8 /* SignUpViewController.swift in Sources */,

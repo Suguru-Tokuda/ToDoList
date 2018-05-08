@@ -27,6 +27,8 @@ class ToDoListAPI {
         var inputId = userId
         if userId == nil {
             inputId = ""
+        } else {
+            inputId = "?id=\(String(describing: inputId!))"
         }
         let urlString = usersBaseURL + method.rawValue + inputId!
         let url = URL(string: urlString)
@@ -37,6 +39,8 @@ class ToDoListAPI {
         var inputId = listId
         if listId == nil {
             inputId = ""
+        } else {
+            inputId = "?id=\(String(describing: inputId!))"
         }
         let urlString = listsBaseURL + method.rawValue + inputId!
         let url = URL(string: urlString)
@@ -47,6 +51,8 @@ class ToDoListAPI {
         var inputId = itemId
         if inputId == nil {
             inputId = ""
+        } else {
+            inputId = "?id=\(String(describing: inputId!))"
         }
         let urlString = itemsBaseURL + method.rawValue + inputId!
         let url = URL(string: urlString)
@@ -57,6 +63,8 @@ class ToDoListAPI {
         var inputId = itemListAssignId
         if inputId == nil {
             inputId = ""
+        } else {
+            inputId = "?id=\(String(describing: inputId!))"
         }
         let urlString = itemListAssignBaseURL + method.rawValue + inputId!
         let url = URL(string: urlString)
@@ -67,6 +75,8 @@ class ToDoListAPI {
         var inputId = listUserAssignId
         if inputId == nil {
             inputId = ""
+        } else {
+            inputId = "?id=\(String(describing: inputId!))"
         }
         let urlString = listUserAssignBaseURL + method.rawValue + inputId!
         let url = URL(string: urlString)
@@ -129,7 +139,7 @@ class ToDoListAPI {
                     for item in items {
                         let id = item["id"] as? String ?? ""
                         let userId = item["userId"] as? String ?? ""
-                        let desc = item["desc"] as? String ?? ""
+                        let itemDescription = item["itemDescription"] as? String ?? ""
                         var isImportant = false
                         let isImportantStr = item["isImportant"] as? String ?? ""
                         if isImportantStr == "true" {
@@ -140,7 +150,7 @@ class ToDoListAPI {
                         if isCompleteStr == "true" {
                             isComplete = true
                         }
-                        itemsArray.append(Item(id: id, userId: userId, desc: desc, isImportant: isImportant, isComplete: isComplete))
+                        itemsArray.append(Item(id: id, userId: userId, itemDescription: itemDescription, isImportant: isImportant, isComplete: isComplete))
                     }
                 }
             }
@@ -187,6 +197,16 @@ class ToDoListAPI {
             return .success(listUserAssignsArray)
         } catch let jsonError {
             return .failure(jsonError)
+        }
+    }
+    
+    public static func getPostPutDeleteResult(fromJSON data: Data) -> PostPutDeleteResult {
+        do {
+            let jsonObject = try JSONSerialization.jsonObject(with: data, options: [])
+            print(jsonObject)
+            return .success(data)
+        } catch let error {
+            return .failure(error)
         }
     }
     
