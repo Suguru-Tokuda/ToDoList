@@ -114,13 +114,14 @@ class ToDoListAPI {
                 if let lists = jsonArray["Items"] as? [[String: Any]] {
                     for list in lists {
                         let id = list["id"] as? String ?? ""
+                        let userId = list["userId"] as? String ?? ""
                         let title = list["title"] as? String ?? ""
                         let isArchivedStr = list["isArchived"] as? String ?? ""
                         var isArchived = false
                         if isArchivedStr == "true" {
                             isArchived = true
                         }
-                        listsArray.append(List(id: id, title: title, isArchived: isArchived))
+                        listsArray.append(List(id: id, userId: userId, title: title, isArchived: isArchived))
                     }
                 }
             }
@@ -190,7 +191,12 @@ class ToDoListAPI {
                         let id = listUserAssign["id"] as? String ?? ""
                         let listId = listUserAssign["listId"] as? String ?? ""
                         let userId = listUserAssign["userId"] as? String ?? ""
-                        listUserAssignsArray.append(ListUserAssign(id: id, userId: userId, listId: listId))
+                        let acceptedStr = listUserAssign["accepted"] as? String ?? ""
+                        var accepted = true
+                        if acceptedStr == "false" {
+                            accepted = false
+                        }
+                        listUserAssignsArray.append(ListUserAssign(id: id, userId: userId, listId: listId, accepted: accepted))
                     }
                 }
             }

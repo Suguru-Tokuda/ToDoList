@@ -11,11 +11,13 @@ import Foundation
 public class List {
     
     private var _id: String?
+    private var _userId: String?
     private var _title: String?
     private var _isArchived: Bool?
     
-    public init(id: String, title: String, isArchived: Bool) {
+    public init(id: String, userId: String, title: String, isArchived: Bool) {
         _id = id
+        _userId = userId
         _title = title
         _isArchived = isArchived
     }
@@ -26,6 +28,15 @@ public class List {
         }
         set(id) {
             _id = id
+        }
+    }
+    
+    public var userId: String {
+        get {
+            return _userId!
+        }
+        set(userId) {
+            _userId = userId
         }
     }
     

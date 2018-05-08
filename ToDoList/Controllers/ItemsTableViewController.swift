@@ -19,6 +19,7 @@ class ItemsTableViewController: UIViewController {
     var itemsToShow: [Item] = [Item]() // contains items to show
     var filteredItems: [Item] = [Item]() // contains items that are filtered
     var itemIds: [String] = [String]()
+    var allUsers: [User]?
     var showCompleted = false
     
     @IBOutlet weak var itemsTableView: UITableView!
@@ -69,6 +70,15 @@ extension ItemsTableViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "itemCell", for: indexPath)
         var item: Item = self.itemsToShow[indexPath.row]
         cell.textLabel!.text = item.itemDescription
+        if item.userId != self.user!.id {
+            var author: User?
+            for u in allUsers! {
+                if item.userId == u.id {
+                    author = u
+                }
+            }
+            cell.detailTextLabel!.text = "added by \(author!.firstName)"
+        }
         if item.isImportant {
             cell.textLabel!.textColor = UIColor.red
         }
@@ -164,6 +174,17 @@ extension ItemsTableViewController {
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    private func getAllUsers() {
+        self.toDoListDataStore?.getUsers(userId: nil, completion: { (result) in
+            switch result {
+            case let .success(response):
+                self.allUsers = response
+            case let .failure(error):
+                print(error)
+            }
+        })
     }
     
     private func resetAllItems() {
@@ -262,7 +283,7 @@ extension ItemsTableViewController {
                 }
                 let insertListUserAssignGrouop = DispatchGroup()
                 insertListUserAssignGrouop.enter()
-                let listUserAssignToInsert = ListUserAssign(id: idCandidate.description, userId: userId!, listId: self.listToShow!.id)
+                let listUserAssignToInsert = ListUserAssign(id: idCandidate.description, userId: userId!, listId: self.listToShow!.id, accepted: false)
                 self.toDoListDataStore?.postPutListUserAssign(method: "POST", listUserAssign: listUserAssignToInsert, completion: { (result) in
                     switch result {
                     case let .success(response):

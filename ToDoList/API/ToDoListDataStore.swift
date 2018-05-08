@@ -152,7 +152,7 @@ public class ToDoListDataStore {
     }
     
     func postPutList(method: String, list: List, completion: @escaping (PostPutDeleteResult) -> Void) {
-        let parameters = ["id": list.id, "title": list.title, "isArchived": list.isArchived.description]
+        let parameters = ["id": list.id, "title": list.title, "isArchived": list.isArchived.description, "userId": list.userId]
         var url: URL?
         if method == "POST" {
             url = ToDoListAPI.getListsRequestURL(method: .noParams, listId: nil)
@@ -226,7 +226,7 @@ public class ToDoListDataStore {
     }
     
     func postPutListUserAssign(method: String, listUserAssign: ListUserAssign, completion: @escaping (PostPutDeleteResult) -> Void) {
-        let parameters = ["id": listUserAssign.id, "userId": listUserAssign.userId, "listId": listUserAssign.listId]
+        let parameters = ["id": listUserAssign.id, "userId": listUserAssign.userId, "listId": listUserAssign.listId, "accepted": listUserAssign.accepted.description]
         var url: URL?
         if method == "POST" {
             url = ToDoListAPI.getListUserAssignURL(method: .noParams, listUserAssignId: nil)

@@ -13,11 +13,13 @@ public class ListUserAssign {
     private var _id: String?
     private var _userId: String?
     private var _listId: String?
+    private var _accepted: Bool?
     
-    public init(id: String, userId: String, listId: String) {
+    public init(id: String, userId: String, listId: String, accepted: Bool) {
         _id = id
         _userId = userId
         _listId = listId
+        _accepted = accepted
     }
     
     public var id: String {
@@ -44,6 +46,15 @@ public class ListUserAssign {
         }
         set(listId) {
             _listId = listId
+        }
+    }
+    
+    public var accepted: Bool {
+        get {
+            return _accepted!
+        }
+        set(accepted) {
+            _accepted = accepted
         }
     }
 }

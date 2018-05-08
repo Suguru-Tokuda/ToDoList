@@ -17,12 +17,16 @@ class ListTableTableViewController: UIViewController {
     var activeLists: [List] = [List]()
     var filteredLists: [List] = [List]()
     var lists: [List] = [List]()
+    var listsToAccept: [List] = [List]()
+    
+    var listUserAssigns: [ListUserAssign] = [ListUserAssign]()
     
     var listToShow: List?
-    
+    var listIdsToAccept: [String] = [String]()
     var listIds: [String] = [String]()
     var appDelegate: AppDelegate?
     var user: User?
+    var allUsers: [User]?
     var isLoggedIn: Bool?
     let toDoListDataStore: ToDoListDataStore = ToDoListDataStore()
     
@@ -64,7 +68,20 @@ class ListTableTableViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        self.getLists()
+        let getAllUsersGroup = DispatchGroup()
+        getAllUsersGroup.enter()
+        self.toDoListDataStore.getUsers(userId: nil) { (result) in
+            switch result {
+            case let .success(response):
+                self.allUsers = response
+            case let .failure(error):
+                print(error)
+            }
+            getAllUsersGroup.leave()
+        }
+        getAllUsersGroup.notify(queue: .main) {
+            self.getLists()
+        }
     }
     
 }
@@ -143,6 +160,8 @@ extension ListTableTableViewController {
         activeLists.removeAll()
         filteredLists.removeAll()
         lists.removeAll()
+        listsToAccept.removeAll()
+        listUserAssigns.removeAll()
     }
     
     @objc func logoutBtnTapped() {
@@ -153,7 +172,13 @@ extension ListTableTableViewController {
     @objc func addListBtnTapped() {
         let alert = UIAlertController(title: "New List", message: "Enter a title", preferredStyle: .alert)
         alert.addTextField { (textField) in
-            textField.text = "List Title"
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateStyle = .medium
+            dateFormatter.timeStyle = .none
+            dateFormatter.locale = Locale(identifier: "en_US")
+            let today = Date()
+            let todayStr = dateFormatter.string(from: today)
+            textField.text = "List - \(todayStr)"
         }
         alert.addAction(UIAlertAction(title: "Create", style: .default, handler: { [weak alert] (_) in
             let title = alert!.textFields![0]
@@ -165,6 +190,60 @@ extension ListTableTableViewController {
     
     @objc func buildFromHistoryBtnTapped() {
         self.performSegue(withIdentifier: "goToArchivedLists", sender: self)
+    }
+    
+    private func showAcceptPrompts() {
+        for list in listsToAccept {
+            let alert = UIAlertController(title: "Accept an invitation?", message: "\(list.title) from ", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (_) in
+                let listId = list.id
+                var listUserAssignToPut: ListUserAssign?
+                for listUserAssign in self.listUserAssigns {
+                    if listUserAssign.listId == listId {
+                        listUserAssignToPut = listUserAssign
+                    }
+                }
+                let putListUserAssignGroup = DispatchGroup()
+                putListUserAssignGroup.enter()
+                listUserAssignToPut?.accepted = true
+                self.toDoListDataStore.postPutListUserAssign(method: "PUT", listUserAssign: listUserAssignToPut!, completion: { (result) in
+                    switch result {
+                    case let .success(response):
+                        print(response)
+                    case let .failure(error):
+                        print(error)
+                    }
+                    putListUserAssignGroup.leave()
+                })
+                putListUserAssignGroup.notify(queue: .main, execute: {
+                    self.getLists()
+                })
+            }))
+            alert.addAction(UIAlertAction(title: "No", style: .default, handler: { (_) in
+                let listId = list.id
+                var listUserAssignToDelete: ListUserAssign?
+                for listUserAssign in self.listUserAssigns {
+                    if listUserAssign.listId == listId {
+                        listUserAssignToDelete = listUserAssign
+                    }
+                }
+                let deleteListUserAssignGroup = DispatchGroup()
+                deleteListUserAssignGroup.enter()
+                self.toDoListDataStore.deleteListUserAssign(id: listUserAssignToDelete!.id, completion: { (result) in
+                    switch result {
+                    case let .success(response):
+                        print(response)
+                    case let .failure(error):
+                        print(error)
+                    }
+                    deleteListUserAssignGroup.leave()
+                })
+                deleteListUserAssignGroup.notify(queue: .main, execute: {
+                    self.getLists()
+                })
+            }))
+            self.present(alert, animated: true, completion: nil)
+        }
     }
     
     private func createList(title: String, userId: String) {
@@ -210,8 +289,8 @@ extension ListTableTableViewController {
             }
             let insertListGroup = DispatchGroup()
             insertListGroup.enter()
-            
-            let listToInsert = List(id: idCandidate.description, title: title, isArchived: false)
+
+            let listToInsert = List(id: idCandidate.description, userId: self.user!.id, title: title, isArchived: false)
             self.toDoListDataStore.postPutList(method: "POST", list: listToInsert, completion: { (result) in
                 switch result {
                 case let .success(response):
@@ -223,13 +302,12 @@ extension ListTableTableViewController {
             })
             insertListGroup.notify(queue: .main, execute: {
                 let allListUserAssignGroup = DispatchGroup()
-                var listUserAssigns: [ListUserAssign]?
                 allListUserAssignGroup.enter()
                 
                 self.toDoListDataStore.getListUserAssigns(listUserAssignId: nil, completion: { (listUserAssignsResult) in
                     switch listUserAssignsResult {
                     case let .success(response):
-                        listUserAssigns = response
+                        self.listUserAssigns = response
                     case let .failure(error):
                         print(error)
                     }
@@ -239,7 +317,7 @@ extension ListTableTableViewController {
                 allListUserAssignGroup.notify(queue: .main, execute: {
                     idCandidate = arc4random_uniform(1000) + 1
                     uniqueCounter = 0
-                    max = listUserAssigns!.count
+                    max = self.listUserAssigns.count
                     
                     while uniqueCounter != max {
                         for i in 0...max {
@@ -249,7 +327,7 @@ extension ListTableTableViewController {
                                 break
                             }
                             if i != max {
-                                if listUserAssigns![i].id != idCandidate.description {
+                                if self.listUserAssigns[i].id != idCandidate.description {
                                     uniqueCounter += 1
                                 }
                             }
@@ -258,7 +336,7 @@ extension ListTableTableViewController {
                     let insetListUserAssignGroup = DispatchGroup()
                     insetListUserAssignGroup.enter()
                     
-                    let listUserAssignToInsert = ListUserAssign(id: idCandidate.description, userId: userId, listId: listToInsert.id)
+                    let listUserAssignToInsert = ListUserAssign(id: idCandidate.description, userId: userId, listId: listToInsert.id, accepted: true)
                     self.toDoListDataStore.postPutListUserAssign(method: "POST", listUserAssign: listUserAssignToInsert, completion: { (postPutDeleteResult) in
                         switch postPutDeleteResult {
                         case let .success(response):
@@ -292,10 +370,14 @@ extension ListTableTableViewController {
             switch listUserAssigns {
             case let .success(listUserAssigns):
                 self.listIds.removeAll()
+                self.listIdsToAccept.removeAll()
                 for listUserAssign in listUserAssigns {
                     let listId = listUserAssign.listId
-                    if self.user!.id == listUserAssign.userId && !self.listIds.contains(listId) {
+                    if self.user!.id == listUserAssign.userId && !self.listIds.contains(listId) && listUserAssign.accepted {
                         self.listIds.append(listId)
+                    }
+                    if self.user!.id == listUserAssign.userId && !self.listIds.contains(listId) && !listUserAssign.accepted {
+                        self.listIdsToAccept.append(listId)
                     }
                 }
                 self.listIds.sort()
@@ -318,6 +400,11 @@ extension ListTableTableViewController {
                                 self.allLists.append(list)
                             }
                         }
+                        for listIdToAccept in self.listIdsToAccept {
+                            if listIdToAccept == list.id {
+                                self.listsToAccept.append(list)
+                            }
+                        }
                     }
                 case let .failure(error):
                     print(error)
@@ -335,6 +422,7 @@ extension ListTableTableViewController {
             }
             self.lists = self.activeLists
             self.activityIndicatorView?.stopAnimating()
+            self.showAcceptPrompts()
             self.listTableView.reloadData()
         }
     }
