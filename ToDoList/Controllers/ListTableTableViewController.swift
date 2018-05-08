@@ -422,7 +422,9 @@ extension ListTableTableViewController {
             }
             self.lists = self.activeLists
             self.activityIndicatorView?.stopAnimating()
-            self.showAcceptPrompts()
+            if self.listIdsToAccept.count > 0 {
+                self.showAcceptPrompts()
+            }
             self.listTableView.reloadData()
         }
     }
